@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EIO Mobile</string>
+    <string name="time_text">9:41</string>
+    <string name="greeting">Halo, Ilham!</string>
+    <string name="major">TEKNIK INFORMATIKA</string>
+    <string name="initials">IL</string>
+
+    <string name="status_process">SEDANG DIPROSES</string>
+    <string name="report_title">AC Lab Sofware</string>
+    <string name="report_location">Gedung F Lt.1, UMKT</string>
+
+    <string name="new_report_title">Buat Laporan Baru</string>
+    <string name="new_report_desc">Laporkan kerusakan fasilitas</string>
+
+    <string name="history_title">Riwayat Anda</string>
+    <string name="see_all">LIHAT SEMUA</string>
+
+    <string name="history_item_title">Lampu Koridor Mati</string>
+    <string name="history_item_desc">Selesai diperbaiki</string>
+
+    <string name="category_title">Kategori Fasilitas</string>
+
+    <string name="category_electronic">ELEKTRONIK</string>
+    <string name="category_furniture">FURNITUR</string>
+    <string name="category_sanitation">SANITASI</string>
+    <string name="category_network">JARINGAN</string>
+    <string name="category_building">GEDUNG</string>
+    <string name="category_outdoor">AREA LUAR</string>
+
+    <string name="nav_home">Beranda</string>
+    <string name="nav_history">Riwayat</string>
+    <string name="nav_notification">Notifikasi</string>
+    <string name="nav_profile">Profil</string>
+
+    <string name="new_report_desc_full">Foto kerusakan langsung di lokasi untuk pelaporan instan.</string>
+</resources>
