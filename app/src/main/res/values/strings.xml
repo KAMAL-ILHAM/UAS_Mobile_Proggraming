@@ -32,6 +32,8 @@
     <string name="nav_history">Riwayat</string>
     <string name="nav_notification">Notifikasi</string>
     <string name="nav_profile">Profil</string>
-
+    <string name="teks_syarat_ketentuan"><![CDATA[Dengan mendaftar, Anda menyetujui <font color="#2563EB"><b>Syarat &amp; Ketentuan</b></font> serta<br><b>kebijakan privasi</b> kampus.]]></string>
     <string name="new_report_desc_full">Foto kerusakan langsung di lokasi untuk pelaporan instan.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
