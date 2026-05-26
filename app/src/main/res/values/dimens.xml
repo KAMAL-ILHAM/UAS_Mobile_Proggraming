@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_default">20dp</dimen>
+    <dimen name="margin_small">12dp</dimen>
+    <dimen name="margin_tiny">8dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+
+    <dimen name="text_title">28sp</dimen>
+    <dimen name="text_header">11sp</dimen>
+    <dimen name="text_item_title">14sp</dimen>
+    <dimen name="text_item_desc">12sp</dimen>
+    <dimen name="text_time">11sp</dimen>
+    <dimen name="text_tab">13sp</dimen>
+
+    <dimen name="icon_size_medium">42dp</dimen>
+    <dimen name="icon_size_small">20dp</dimen>
+
+    <dimen name="radius_tab">24dp</dimen>
+    <dimen name="radius_icon">21dp</dimen>
+
+    <dimen name="bottom_nav_height">72dp</dimen>
+
+    <dimen name="radius_card">16dp</dimen>
+    <dimen name="radius_button">12dp</dimen>
+    <dimen name="padding_card">20dp</dimen>
+</resources>

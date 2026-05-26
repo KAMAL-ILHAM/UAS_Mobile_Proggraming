@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_splash_gradient"
+    tools:context=".SplashActivity">
+
+    <FrameLayout
+        android:id="@+id/flLogoContainer"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:background="@drawable/bg_white_rounded_28"
+        android:elevation="8dp"
+        app:layout_constraintBottom_toTopOf="@id/tvFixIt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <ImageView
+            android:id="@+id/ivSplashLogo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:padding="-24dp"
+            android:src="@drawable/bg_splash_logo" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvFixIt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/inter_extrabold"
+        android:text="FIX IT"
+        android:textColor="@color/white"
+        android:textSize="48sp"
+        android:shadowColor="#66000000"
+        android:shadowDx="0"
+        android:shadowDy="6"
+        android:shadowRadius="8"
+        app:layout_constraintBottom_toTopOf="@id/tvCampusCompanion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/flLogoContainer" />
+
+    <TextView
+        android:id="@+id/tvCampusCompanion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/inter_semibold"
+        android:letterSpacing="0.1"
+        android:text="CAMPUS COMPANION"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvFixIt" />
+
+    <TextView
+        android:id="@+id/tvFakultas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="@font/inter_bold"
+        android:letterSpacing="0.08"
+        android:text="FAKULTAS ILMU KOMPUTER"
+        android:textColor="#E6FFFFFF"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

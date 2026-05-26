@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,7 +15,7 @@
         android:theme="@style/Theme.UTS">
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,16 +24,79 @@
         </activity>
 
         <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="reset_sandi"
+                    android:scheme="fixit" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".RegisterActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".RegisterSuccessActivity"
             android:exported="false" />
 
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".ProfilActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RiwayatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetailRiwayatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BuatLaporanActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".BuatLaporanLangkah2Activity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".BuatLaporanKonfirmasiActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LaporanSuksesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InformasiPribadiActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".PusatBantuanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PengumumanDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OnboardingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:theme="@style/Theme.UTS.Fullscreen" />
 
-        <activity android:name=".DetailActivity" />
-        <activity android:name=".ProfilActivity" />
-        <activity android:name=".RiwayatActivity" />
     </application>
 
 </manifest>

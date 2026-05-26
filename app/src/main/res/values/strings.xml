@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">EIO Mobile</string>
+    <string name="title_notification">Notifikasi</string>
     <string name="time_text">9:41</string>
-    <string name="greeting">Halo, Ilham Kamal!</string>
-    <string name="major">TEKNIK INFORMATIKA</string>
-    <string name="initials">IL</string>
+
+    <string name="greeting">Halo, Kamal Ilham!</string>
+    <string name="major">FARMASI</string>
+    <string name="initials">KI</string>
 
     <string name="status_process">SEDANG DIPROSES</string>
     <string name="report_title">AC Lab Sofware</string>
@@ -12,15 +14,14 @@
 
     <string name="new_report_title">Buat Laporan Baru</string>
     <string name="new_report_desc">Laporkan kerusakan fasilitas</string>
+    <string name="new_report_desc_full">Foto kerusakan langsung di lokasi untuk pelaporan instan.</string>
 
     <string name="history_title">Riwayat Anda</string>
     <string name="see_all">LIHAT SEMUA</string>
-
     <string name="history_item_title">Lampu Koridor Mati</string>
     <string name="history_item_desc">Selesai diperbaiki</string>
 
     <string name="category_title">Kategori Fasilitas</string>
-
     <string name="category_electronic">ELEKTRONIK</string>
     <string name="category_furniture">FURNITUR</string>
     <string name="category_sanitation">SANITASI</string>
@@ -28,12 +29,25 @@
     <string name="category_building">GEDUNG</string>
     <string name="category_outdoor">AREA LUAR</string>
 
+    <string name="tab_all">Semua</string>
+    <string name="tab_unread">Belum Dibaca (2)</string>
+    <string name="tab_system">Sistem</string>
+    <string name="header_new">BARU (HARI INI)</string>
+    <string name="header_previous">SEBELUMNYA</string>
+
     <string name="nav_home">Beranda</string>
     <string name="nav_history">Riwayat</string>
     <string name="nav_notification">Notifikasi</string>
     <string name="nav_profile">Profil</string>
+    <string name="login_warning_text"><b>Sistem Anti-Spam:</b> Laporan hanya dapat dibuat oleh akun tervalidasi. Penggunaan NIM orang lain dapat dikenakan sanksi akademik.</string>
+    <string name="login_register_text"><![CDATA[Belum Memiliki Akun? <font color="#2563EB"><b>Buat Akun</b></font>]]></string>
     <string name="teks_syarat_ketentuan"><![CDATA[Dengan mendaftar, Anda menyetujui <font color="#2563EB"><b>Syarat &amp; Ketentuan</b></font> serta<br><b>kebijakan privasi</b> kampus.]]></string>
-    <string name="new_report_desc_full">Foto kerusakan langsung di lokasi untuk pelaporan instan.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_detail_notification">Detail Pemberitahuan</string>
+    <string name="btn_track">Lacak Status Laporan</string>
+    <string name="label_detail_masalah"><![CDATA[DETAIL MASALAH <font color="#EF4444">*</font>]]></string>
+    <string name="label_bukti_foto"><![CDATA[BUKTI FOTO <font color="#EF4444">*</font>]]></string>
+    <string name="label_kategori"><![CDATA[PILIH KATEGORI KERUSAKAN <font color="#EF4444">*</font>]]></string>
+    <string name="label_gedung"><![CDATA[GEDUNG / AREA <font color="#EF4444">*</font>]]></string>
+    <string name="label_ruangan"><![CDATA[NAMA / NOMOR RUANGAN <font color="#EF4444">*</font>]]></string>
+
 </resources>

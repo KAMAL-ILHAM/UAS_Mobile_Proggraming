@@ -1,288 +1,252 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:fillViewport="true"
-    tools:context=".LoginActivity">
+    android:background="#F8FAFC"
+    android:fitsSystemWindows="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="24dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="24dp"
-        android:paddingBottom="24dp">
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="24dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp"
             android:src="@drawable/ic_arrow_back_modern"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/text_primary" />
+            app:tint="#0F172A"/>
+    </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/ivLogoBackground"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/bg_rounded_logo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnBack">
-
-            <ImageView
-                android:id="@+id/ivLogoUser"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_logo_user"
-                app:tint="@color/primary_blue" />
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:fontFamily="@font/inter_extrabold"
-            android:text="Masuk ke Akun"
-            android:textColor="@color/text_primary"
-            android:textSize="32sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivLogoBackground" />
-
-        <TextView
-            android:id="@+id/tvSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:fontFamily="@font/inter_regular"
-            android:lineSpacingExtra="6dp"
-            android:text="Validasi identitas sebagai mahasiswa aktif untuk mulai melaporkan fasilitas."
-            android:textColor="@color/text_secondary"
-            android:textSize="15sp"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
-
-        <TextView
-            android:id="@+id/labelNim"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:fontFamily="@font/inter_semibold"
-            android:text="NOMOR INDUK MAHASISWA (NIM)"
-            android:textColor="@color/text_secondary"
-            android:textSize="11sp"
-            android:letterSpacing="0.05"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
-
-        <FrameLayout
-            android:id="@+id/flInputNim"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_input_modern"
-            app:layout_constraintTop_toBottomOf="@id/labelNim">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="start|center_vertical"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/ic_user_outline"
-                app:tint="@color/text_secondary" />
-
-            <TextView
-                android:id="@+id/tvNimPlaceholder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:layout_marginStart="48dp"
-                android:fontFamily="@font/inter_regular"
-                android:text="Contoh: 241110..."
-                android:textColor="@color/text_secondary"
-                android:textSize="15sp" />
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etNim"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/transparent"
-                android:inputType="number"
-                android:paddingStart="48dp"
-                android:paddingEnd="16dp"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp"
-                app:backgroundTint="@color/transparent" />
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/labelPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
-            android:fontFamily="@font/inter_semibold"
-            android:text="KATA SANDI / PIN SIAKAD"
-            android:textColor="@color/text_secondary"
-            android:textSize="11sp"
-            android:letterSpacing="0.05"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/flInputNim" />
-
-        <FrameLayout
-            android:id="@+id/flInputPassword"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_input_modern"
-            app:layout_constraintTop_toBottomOf="@id/labelPassword">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="start|center_vertical"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/ic_lock_outline"
-                app:tint="@color/text_secondary" />
-
-            <TextView
-                android:id="@+id/tvPasswordPlaceholder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:layout_marginStart="48dp"
-                android:fontFamily="@font/inter_regular"
-                android:text="••••••••"
-                android:textColor="@color/text_secondary"
-                android:textSize="15sp" />
-
-            <ImageView
-                android:id="@+id/ivPasswordVisibility"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_visibility"
-                app:tint="@color/text_secondary"
-                android:clickable="true"
-                android:focusable="true"/>
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPassword"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/transparent"
-                android:inputType="textPassword"
-                android:paddingStart="48dp"
-                android:paddingEnd="48dp"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp"
-                app:backgroundTint="@color/transparent" />
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/tvForgotPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:fontFamily="@font/inter_semibold"
-            android:text="Lupa kata sandi?"
-            android:textColor="@color/primary_blue"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/flInputPassword" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingBottom="40dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
-            android:id="@+id/warningBox"
+            android:id="@+id/layoutMainContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
-            android:background="@drawable/bg_warning"
-            android:padding="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/tvForgotPassword">
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="2dp"
-                android:src="@drawable/ic_shield_modern"
-                app:tint="@color/text_warning" />
+            <FrameLayout
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_icon_container"
+                android:elevation="4dp"
+                android:outlineAmbientShadowColor="#2563EB"
+                android:outlineSpotShadowColor="#2563EB">
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_id_card_blue2" />
+            </FrameLayout>
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/inter_regular"
-                android:lineSpacingExtra="4dp"
-                android:text="Sistem Anti-Spam: Laporan hanya dapat dibuat oleh akun tervalidasi. Penggunaan NIM orang lain dapat dikenakan sanksi akademik."
-                android:textColor="@color/text_warning"
-                android:textSize="12sp" />
-        </LinearLayout>
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/inter_extrabold"
+                android:text="Masuk ke Akun"
+                android:textColor="#0F172A"
+                android:textSize="28sp" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/btnLogin"
-            app:layout_constraintTop_toBottomOf="@id/warningBox"
-            app:layout_constraintVertical_weight="1" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLogin"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="32dp"
-            android:backgroundTint="@color/primary_blue"
-            android:fontFamily="@font/inter_bold"
-            android:text="Masuk Sistem"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:cornerRadius="16dp"
-            app:icon="@drawable/ic_arrow_forward_small"
-            app:iconGravity="end"
-            app:iconPadding="10dp"
-            app:iconSize="16dp"
-            app:iconTint="@color/white"
-            app:elevation="8dp"
-            app:layout_constraintBottom_toTopOf="@id/llFooter"
-            app:layout_constraintTop_toBottomOf="@id/warningBox"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <LinearLayout
-            android:id="@+id/llFooter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/inter_medium"
+                android:lineSpacingExtra="6dp"
+                android:text="Validasi identitas sebagai mahasiswa aktif untuk mulai melaporkan fasilitas."
+                android:textColor="#64748B"
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_regular"
-                android:text="Belum Memiliki Akun? "
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tvRegister"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
                 android:fontFamily="@font/inter_bold"
-                android:text="Buat Akun"
-                android:textColor="@color/primary_blue"
-                android:textSize="14sp" />
-        </LinearLayout>
+                android:text="NOMOR INDUK MAHASISWA (NIM)"
+                android:textColor="#94A3B8"
+                android:textSize="11sp"
+                android:letterSpacing="0.05" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayoutNim"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:boxBackgroundColor="#F8FAFC"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxStrokeColor="#2563EB"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="1.5dp"
+                app:hintEnabled="false"
+                app:startIconDrawable="@drawable/ic_user_gray"
+                app:startIconTint="#94A3B8">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNim"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:hint="Contoh: 241110..."
+                    android:inputType="number"
+                    android:paddingStart="0dp"
+                    android:textColor="#0F172A"
+                    android:textColorHint="#CBD5E1"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="KATA SANDI / PIN SIAKAD"
+                android:textColor="#94A3B8"
+                android:textSize="11sp"
+                android:letterSpacing="0.05" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayoutPassword"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:boxBackgroundColor="#F8FAFC"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxStrokeColor="#2563EB"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="1.5dp"
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="#94A3B8"
+                app:startIconDrawable="@drawable/ic_lock_gray"
+                app:startIconTint="#94A3B8">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:hint="••••••••"
+                    android:inputType="textPassword"
+                    android:paddingStart="0dp"
+                    android:textColor="#0F172A"
+                    android:textColorHint="#CBD5E1"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tvLupaSandi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="12dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/inter_bold"
+                android:paddingVertical="4dp"
+                android:text="Lupa kata sandi?"
+                android:textColor="#2563EB"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_warning_box"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_shield_orange" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:lineSpacingExtra="4dp"
+                    android:text="@string/login_warning_text"
+                    android:textColor="#D97706"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMasuk"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:text="Masuk Sistem"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:fontFamily="@font/inter_bold"
+                app:icon="@drawable/ic_login_arrow"
+                app:iconGravity="textEnd"
+                app:iconTint="#FFFFFF"
+                app:backgroundTint="#2563EB"
+                app:cornerRadius="16dp"
+                app:elevation="8dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Belum Memiliki Akun? "
+                    android:textColor="#64748B"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Buat Akun"
+                    android:textColor="#2563EB"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

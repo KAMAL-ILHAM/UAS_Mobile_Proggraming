@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tvSectionHeader"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/margin_default"
+    android:paddingTop="24dp"
+    android:paddingBottom="12dp"
+    android:background="@color/colorWhite"
+    android:fontFamily="@font/inter_bold"
+    android:textColor="@color/textSecondary"
+    android:textSize="@dimen/text_header"
+    android:letterSpacing="0.05"/>

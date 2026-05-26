@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0F172A"
+    android:padding="32dp">
+
+    <FrameLayout
+        android:id="@+id/flImageContainerDark"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="48dp"
+        android:background="@drawable/bg_onboarding_card_dark"
+        app:layout_constraintBottom_toTopOf="@id/tvTitleDark"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_shield_check_outline"
+            app:tint="#94A3B8" /> </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvTitleDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="@font/inter_extrabold"
+        android:text="Terintegrasi &amp; Bebas\nSpam"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="26sp"
+        app:layout_constraintBottom_toTopOf="@id/tvDescDark" />
+
+    <TextView
+        android:id="@+id/tvDescDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="@font/inter_regular"
+        android:gravity="center"
+        android:lineSpacingExtra="6dp"
+        android:text="Hanya mahasiswa aktif dengan NIM terdaftar yang dapat mengajukan laporan. Data valid, penanganan cepat."
+        android:textColor="#94A3B8"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@id/layoutDotsDark" />
+
+    <LinearLayout
+        android:id="@+id/layoutDotsDark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/btnStartWrapper"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_dot_inactive"
+            android:alpha="0.5" /> <View
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_dot_inactive"
+        android:alpha="0.5" />
+
+        <View
+            android:layout_width="24dp"
+            android:layout_height="6dp"
+            android:background="@drawable/bg_dot_active"
+            android:backgroundTint="@color/white" /> </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btnStartWrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <FrameLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_button_start">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_up_double" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/inter_bold"
+            android:letterSpacing="0.05"
+            android:text="GESER UNTUK MULAI"
+            android:textColor="#94A3B8"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

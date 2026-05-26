@@ -1,5 +1,6 @@
 package id.ac.umkt.mobileprogramming.uts
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,25 +16,31 @@ class BuatSandiBaruFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Ganti 'nama_file_xml_kamu' dengan nama file layout XML yang sedang kamu buka ini
-        // Misalnya: R.layout.fragment_buat_sandi_baru
         val view = inflater.inflate(R.layout.fragment_buat_sandi_baru, container, false)
 
-        // Mengenalkan tombol dari XML ke Kotlin
+        // Inisialisasi View (Pastikan ID di XML sesuai dengan ini)
         val btnBack: ImageView = view.findViewById(R.id.btnBackReset)
         val btnSave: MaterialButton = view.findViewById(R.id.btnSavePassword)
 
-        // Fungsi tombol panah kembali
+        // 1. Fungsi tombol panah kembali
         btnBack.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        // Fungsi tombol simpan
+        // 2. Fungsi tombol simpan (Simulasi)
         btnSave.setOnClickListener {
-            Toast.makeText(context, "Kata sandi berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+            // Munculkan notifikasi sukses
+            Toast.makeText(requireContext(), "Kata sandi berhasil diperbarui! Silakan login kembali.", Toast.LENGTH_LONG).show()
 
-            // Setelah berhasil ganti sandi, tutup semua fragment dan kembali ke layar Login utama
-            requireActivity().supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            // Kembali ke halaman Login dan hapus jejak Deep Link
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+
+            // Flags ini sangat penting agar pengguna tidak bisa kembali ke halaman ganti sandi
+            // saat menekan tombol back di HP setelah berhasil ganti sandi.
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+            startActivity(intent)
+            requireActivity().finish()
         }
 
         return view
