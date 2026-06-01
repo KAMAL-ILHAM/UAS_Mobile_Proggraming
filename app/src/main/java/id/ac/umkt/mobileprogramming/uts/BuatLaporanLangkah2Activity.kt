@@ -1,8 +1,8 @@
 package id.ac.umkt.mobileprogramming.uts
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,10 +11,13 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.FileProvider
 import com.google.android.material.button.MaterialButton
+import java.io.File
 
 class BuatLaporanLangkah2Activity : AppCompatActivity() {
 
@@ -22,6 +25,9 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
     private var incomingGedung: String = ""
     private var incomingRuangan: String = ""
     private var imageUriString: String = ""
+
+    // Deklarasi variabel untuk menampung Uri foto resolusi tinggi
+    private var currentPhotoUri: Uri? = null
 
     private lateinit var etDetailMasalah: EditText
     private lateinit var tvCounter: TextView
@@ -33,18 +39,28 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
     private var isPhotoUploaded = false
     private var isTextValid = false
 
-    // Launcher Kamera Modern Android
-    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
-        if (bitmap != null) {
-            // Tampilkan foto
-            ivPreviewFoto.setImageBitmap(bitmap)
+    // 1. Launcher Kamera (Full Resolution)
+    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
+        if (isSuccess) {
+            currentPhotoUri?.let { uri ->
+                ivPreviewFoto.setImageURI(uri)
+                ivPreviewFoto.visibility = View.VISIBLE
+                layoutPlaceholderFoto.visibility = View.GONE
+                isPhotoUploaded = true
+                imageUriString = uri.toString()
+                validateForm()
+            }
+        }
+    }
+
+    // 2. Launcher Galeri (Hanya memfilter format gambar)
+    private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            ivPreviewFoto.setImageURI(uri)
             ivPreviewFoto.visibility = View.VISIBLE
             layoutPlaceholderFoto.visibility = View.GONE
             isPhotoUploaded = true
-
-            val tempUri = saveBitmapToCache(bitmap)
-            imageUriString = tempUri.toString() // Simpan alamat file-nya
-
+            imageUriString = uri.toString()
             validateForm()
         }
     }
@@ -52,11 +68,12 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buat_laporan_langkah2)
+
         incomingKategori = intent.getStringExtra("KATEGORI_TERPILIH") ?: ""
         incomingGedung = intent.getStringExtra("GEDUNG_TERPILIH") ?: ""
         incomingRuangan = intent.getStringExtra("RUANGAN_TERPILIH") ?: ""
 
-        // 1. Kenalkan Views
+        // 1. Kenalkan Views (ID tidak ada yang diubah)
         etDetailMasalah = findViewById(R.id.etDetailMasalah)
         tvCounter = findViewById(R.id.tvCounter)
         btnLanjut = findViewById(R.id.btnLanjut)
@@ -82,16 +99,24 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
             }
         })
 
-        // 4. Klik Buka Kamera
+        // 4. Klik Buka Kamera / Galeri (Memunculkan Dialog)
         cardUploadFoto.setOnClickListener {
-            takePictureLauncher.launch(null) // Langsung buka kamera
+            showImageSourceDialog()
         }
 
         // 5. Klik Tombol Lanjut
-        // 5. Klik Tombol Lanjut
         btnLanjut.setOnClickListener {
-            val detailMasalah = etDetailMasalah.text.toString().trim()
 
+            if (!isPhotoUploaded) {
+                android.widget.Toast.makeText(this, "Harap lampirkan bukti foto terlebih dahulu!", android.widget.Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (!isTextValid) {
+                android.widget.Toast.makeText(this, "Detail masalah minimal 5 karakter!", android.widget.Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val detailMasalah = etDetailMasalah.text.toString().trim()
             val intent = Intent(this, BuatLaporanKonfirmasiActivity::class.java)
 
             intent.putExtra("KATEGORI_FINAL", incomingKategori)
@@ -102,6 +127,37 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        validateForm()
+    }
+
+    // --- FUNGSI TAMBAHAN BARU ---
+
+    // Fungsi untuk membuat file kosong sementara sebelum kamera dibuka
+    private fun createImageUri(): Uri {
+        val file = File(cacheDir, "bukti_laporan_${System.currentTimeMillis()}.jpg")
+        return FileProvider.getUriForFile(this, "${packageName}.fileprovider", file)
+    }
+
+    // Fungsi Dialog Pilihan Sumber Foto
+    private fun showImageSourceDialog() {
+        val options = arrayOf("Ambil dari Kamera", "Pilih dari Galeri")
+        android.app.AlertDialog.Builder(this)
+            .setTitle("Lampirkan Bukti Foto")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> {
+                        // Buka Kamera
+                        currentPhotoUri = createImageUri()
+                        currentPhotoUri?.let { takePictureLauncher.launch(it) }
+                    }
+                    1 -> {
+                        // Buka Galeri
+                        pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    }
+                }
+            }
+            .show()
     }
 
     // Fungsi Validasi Tombol (Berubah Biru jika lengkap)
@@ -111,26 +167,14 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
             btnLanjut.isEnabled = true
             btnLanjut.setBackgroundColor(Color.parseColor("#2563EB"))
             btnLanjut.setTextColor(Color.WHITE)
-            btnLanjut.setIconTintResource(R.color.white) // Pastikan R.color.white ada di colors.xml
+            btnLanjut.setIconTintResource(R.color.white)
             btnLanjut.elevation = 8f
         } else {
             // Tidak Aktif (Abu-abu)
             btnLanjut.isEnabled = false
             btnLanjut.setBackgroundColor(Color.parseColor("#F1F5F9"))
             btnLanjut.setTextColor(Color.parseColor("#94A3B8"))
-            // Jika ingin set tint warna abu secara programatik
-            // btnLanjut.iconTint = ColorStateList.valueOf(Color.parseColor("#94A3B8"))
             btnLanjut.elevation = 0f
         }
-    }
-
-    private fun saveBitmapToCache(bitmap: Bitmap): android.net.Uri {
-        // Buat file fisik bernama bukti_laporan_xxx.jpg di folder cache
-        val file = java.io.File(cacheDir, "bukti_laporan_${System.currentTimeMillis()}.jpg")
-        file.outputStream().use {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
-        }
-        // Kembalikan alamat (URI) dari file fisik tersebut
-        return android.net.Uri.fromFile(file)
     }
 }
