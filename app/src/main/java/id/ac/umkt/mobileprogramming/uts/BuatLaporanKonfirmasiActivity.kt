@@ -7,6 +7,7 @@ import android.os.Looper
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
+import android.content.Context
 
 class BuatLaporanKonfirmasiActivity : AppCompatActivity() {
 
@@ -19,7 +20,14 @@ class BuatLaporanKonfirmasiActivity : AppCompatActivity() {
             finish()
         }
 
-        // 2. Fungsi Klik Tombol Kirim (Simulasi Animasi & State)
+        // 2. Tangkap semua data yang dilempar dari Langkah 2
+        val kategori = intent.getStringExtra("KATEGORI_FINAL") ?: ""
+        val gedung = intent.getStringExtra("GEDUNG_FINAL") ?: ""
+        val ruangan = intent.getStringExtra("RUANGAN_FINAL") ?: ""
+        val detail = intent.getStringExtra("DETAIL_FINAL") ?: ""
+        val fotoUri = intent.getStringExtra("FOTO_URI") ?: ""
+
+        // 3. Fungsi Klik Tombol Kirim (Simulasi Animasi & State)
         val btnKirimLaporan = findViewById<MaterialButton>(R.id.btnKirimLaporan)
 
         btnKirimLaporan.setOnClickListener {
@@ -30,20 +38,36 @@ class BuatLaporanKonfirmasiActivity : AppCompatActivity() {
             btnKirimLaporan.text = "Mengirim Laporan..."
             btnKirimLaporan.icon = null // Sembunyikan icon send saat loading
 
+            // ==========================================
+            // TODO untuk Tim Database:
+            // Silakan integrasikan dengan Firebase Firestore & Storage.
+            // Variabel data yang siap dikirim:
+            // 1. kategori
+            // 2. gedung
+            // 3. ruangan
+            // 4. detail
+            // 5. fotoUri  <-- Alamat file fisik foto (String)
+            // ==========================================
+
             // Simulasi proses pengiriman data API selama 2 detik
             Handler(Looper.getMainLooper()).postDelayed({
 
+                val sharedPref = getSharedPreferences("DB_LOKAL_SEMENTARA", Context.MODE_PRIVATE)
+                with(sharedPref.edit()) {
+                    putString("kategori", kategori)
+                    putString("lokasi", "$gedung, $ruangan")
+                    putString("status", "● SEDANG DIPROSES")
+                    putString("detail", detail)
+                    apply()
+                }
+
                 // Setelah 2 detik, arahkan ke Halaman Sukses
                 val intent = Intent(this, LaporanSuksesActivity::class.java)
-
-                // Flag ini membersihkan riwayat halaman agar user tidak bisa menekan "Back"
-                // dan kembali ke halaman form konfirmasi ini
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
-
                 finish()
 
-            }, 2000) // Delay 2000 ms (2 detik)
+            }, 2000)
         }
     }
 }

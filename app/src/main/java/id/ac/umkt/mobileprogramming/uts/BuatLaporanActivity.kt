@@ -36,6 +36,7 @@ class BuatLaporanActivity : AppCompatActivity() {
 
     private lateinit var cardsList: List<LinearLayout>
     private var selectedGedungPosition = 4 // Default Gedung E (urutan ke-4 indeks array)
+    private var selectedKategori: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +108,11 @@ class BuatLaporanActivity : AppCompatActivity() {
         btnLanjut.setOnClickListener {
             val namaRuangan = etNamaRuangan.text.toString().trim()
 
+            if (selectedKategori == null) {
+                Toast.makeText(this, "Harap pilih kategori fasilitas terlebih dahulu", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             // Validasi Premium: Cegah lanjut jika nama ruangan belum diisi
             if (namaRuangan.isEmpty()) {
                 Toast.makeText(this, "Harap isi nama ruangan terlebih dahulu", Toast.LENGTH_SHORT).show()
@@ -118,6 +124,7 @@ class BuatLaporanActivity : AppCompatActivity() {
             val intent = Intent(this, BuatLaporanLangkah2Activity::class.java)
 
             // Membawa data pilihan ke halaman selanjutnya (opsional)
+            intent.putExtra("KATEGORI_TERPILIH", selectedKategori)
             intent.putExtra("GEDUNG_TERPILIH", tvSelectedGedung.text.toString())
             intent.putExtra("RUANGAN_TERPILIH", namaRuangan)
 
@@ -161,6 +168,7 @@ class BuatLaporanActivity : AppCompatActivity() {
         activeImg.setColorFilter(Color.parseColor("#2563EB")) // Tint warna biru aktif asli
         activeTxt.text = title
         activeTxt.setTextColor(Color.parseColor("#0F172A")) // Navy pekat teks aktif
+        selectedKategori = title
     }
 
     private fun showSubCategoryBottomSheet(onItemClick: (CategoryItem) -> Unit) {

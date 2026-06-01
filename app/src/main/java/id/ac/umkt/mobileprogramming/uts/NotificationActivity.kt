@@ -1,5 +1,6 @@
 package id.ac.umkt.mobileprogramming.uts
 
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,11 +15,42 @@ class NotificationActivity : AppCompatActivity() {
         val rvNotifications = findViewById<RecyclerView>(R.id.rvNotifications)
         rvNotifications.layoutManager = LinearLayoutManager(this)
 
-        val data = getDummyData()
+        // Kita panggil fungsi dinamis yang baru
+        val data = getDynamicData()
         val adapter = NotificationAdapter(data)
         rvNotifications.adapter = adapter
     }
 
+    // [LOGIKA BARU] Fungsi untuk menggabungkan data dummy dengan data laporan real-time
+    private fun getDynamicData(): List<NotificationItem> {
+        // 1. Ambil data dummy bawaan sebagai dasar
+        val baseData = getDummyData().toMutableList()
+
+        // 2. Cek apakah ada laporan baru dari memori HP
+        val sharedPref = getSharedPreferences("DB_LOKAL_SEMENTARA", Context.MODE_PRIVATE)
+        val savedKategori = sharedPref.getString("kategori", null)
+
+        // 3. Jika ada laporan, buatkan notifikasinya dan taruh di paling atas
+        if (savedKategori != null) {
+            val savedLokasi = sharedPref.getString("lokasi", "Area Kampus")
+
+            val newNotification = NotificationItem.Data(
+                title = "Laporan Berhasil Diterima",
+                desc = "Pengaduan $savedKategori di $savedLokasi telah masuk ke sistem kami dan sedang dalam antrean pengecekan teknisi.",
+                time = "Baru saja",
+                isUnread = true,
+                iconRes = R.drawable.ic_document, // Menggunakan ikon dokumen yang sudah ada
+                iconBgColor = R.color.bgIconBlue // Warna background biru agar menonjol
+            )
+
+            // Masukkan notifikasi baru di urutan ke-2 (Index 1), tepat di bawah tulisan Header "BARU (HARI INI)"
+            baseData.add(1, newNotification)
+        }
+
+        return baseData
+    }
+
+    // Ini fungsi dummy data bawaanmu yang tidak kuubah isinya sama sekali
     private fun getDummyData(): List<NotificationItem> {
         return listOf(
             NotificationItem.Header("BARU (HARI INI)"),

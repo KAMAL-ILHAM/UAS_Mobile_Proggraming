@@ -18,6 +18,11 @@ import com.google.android.material.button.MaterialButton
 
 class BuatLaporanLangkah2Activity : AppCompatActivity() {
 
+    private var incomingKategori: String = ""
+    private var incomingGedung: String = ""
+    private var incomingRuangan: String = ""
+    private var imageUriString: String = ""
+
     private lateinit var etDetailMasalah: EditText
     private lateinit var tvCounter: TextView
     private lateinit var btnLanjut: MaterialButton
@@ -35,8 +40,11 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
             ivPreviewFoto.setImageBitmap(bitmap)
             ivPreviewFoto.visibility = View.VISIBLE
             layoutPlaceholderFoto.visibility = View.GONE
-
             isPhotoUploaded = true
+
+            val tempUri = saveBitmapToCache(bitmap)
+            imageUriString = tempUri.toString() // Simpan alamat file-nya
+
             validateForm()
         }
     }
@@ -44,6 +52,9 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buat_laporan_langkah2)
+        incomingKategori = intent.getStringExtra("KATEGORI_TERPILIH") ?: ""
+        incomingGedung = intent.getStringExtra("GEDUNG_TERPILIH") ?: ""
+        incomingRuangan = intent.getStringExtra("RUANGAN_TERPILIH") ?: ""
 
         // 1. Kenalkan Views
         etDetailMasalah = findViewById(R.id.etDetailMasalah)
@@ -79,7 +90,16 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
         // 5. Klik Tombol Lanjut
         // 5. Klik Tombol Lanjut
         btnLanjut.setOnClickListener {
+            val detailMasalah = etDetailMasalah.text.toString().trim()
+
             val intent = Intent(this, BuatLaporanKonfirmasiActivity::class.java)
+
+            intent.putExtra("KATEGORI_FINAL", incomingKategori)
+            intent.putExtra("GEDUNG_FINAL", incomingGedung)
+            intent.putExtra("RUANGAN_FINAL", incomingRuangan)
+            intent.putExtra("DETAIL_FINAL", detailMasalah)
+            intent.putExtra("FOTO_URI", imageUriString)
+
             startActivity(intent)
         }
     }
@@ -102,5 +122,15 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
             // btnLanjut.iconTint = ColorStateList.valueOf(Color.parseColor("#94A3B8"))
             btnLanjut.elevation = 0f
         }
+    }
+
+    private fun saveBitmapToCache(bitmap: Bitmap): android.net.Uri {
+        // Buat file fisik bernama bukti_laporan_xxx.jpg di folder cache
+        val file = java.io.File(cacheDir, "bukti_laporan_${System.currentTimeMillis()}.jpg")
+        file.outputStream().use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+        }
+        // Kembalikan alamat (URI) dari file fisik tersebut
+        return android.net.Uri.fromFile(file)
     }
 }

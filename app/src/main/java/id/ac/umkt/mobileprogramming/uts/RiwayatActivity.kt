@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import android.content.Context
 
 class RiwayatActivity : AppCompatActivity() {
 
@@ -19,17 +20,20 @@ class RiwayatActivity : AppCompatActivity() {
         val layoutEmptyState: View = findViewById(R.id.layoutEmptyState)
         val layoutHasData: View = findViewById(R.id.layoutHasData)
 
+        val sharedPref = getSharedPreferences("DB_LOKAL_SEMENTARA", Context.MODE_PRIVATE)
+        val hasLocalData = sharedPref.getString("kategori", null) != null
+
         // 2. TANGKAP SINYAL DARI MAIN ACTIVITY
         // "EXTRA_IS_EMPTY" dikirim dari MainActivity. Jika tidak ada sinyal, defaultnya true (kosong)
         val isEmpty = intent.getBooleanExtra("EXTRA_IS_EMPTY", true)
 
         // 3. Logika Penampilan Halaman
-        if (isEmpty) {
-            // Jika sinyalnya KOSONG (dari klik ikon bawah di MainActivity)
+        if (!hasLocalData) {
+            // Jika belum pernah buat laporan sama sekali
             layoutEmptyState.visibility = View.VISIBLE
             layoutHasData.visibility = View.GONE
         } else {
-            // Jika sinyalnya ADA DATA (dari klik tulisan "LIHAT SEMUA" di MainActivity)
+            // Jika sudah ada data laporan
             layoutEmptyState.visibility = View.GONE
             layoutHasData.visibility = View.VISIBLE
         }
