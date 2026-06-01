@@ -131,8 +131,6 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
         validateForm()
     }
 
-    // --- FUNGSI TAMBAHAN BARU ---
-
     // Fungsi untuk membuat file kosong sementara sebelum kamera dibuka
     private fun createImageUri(): Uri {
         val file = File(cacheDir, "bukti_laporan_${System.currentTimeMillis()}.jpg")

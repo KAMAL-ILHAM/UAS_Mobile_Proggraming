@@ -86,36 +86,40 @@
         }
 
         /**
-         * FUNGSI A: SINKRONISASI DATA LOGIN
-         * Mengecek SharedPreferences ATAU Intent untuk memastikan nama pasti muncul.
+         * FUNGSI A: SINKRONISASI DATA LOGIN & TITIK MERAH
          */
         private fun syncUserSession() {
             val sharedPref = getSharedPreferences("USER_SESSION", Context.MODE_PRIVATE)
-
-            // Cek SharedPreferences dulu. Kalau kosong, baru cek Intent.
             var namaLengkap = sharedPref.getString("full_name", "")
             if (namaLengkap.isNullOrEmpty()) {
                 namaLengkap = intent.getStringExtra("USER_NAME") ?: "User Tidak Dikenal"
             }
 
-            var jurusan = sharedPref.getString("major", "")
-            if (jurusan.isNullOrEmpty()) {
-                jurusan = intent.getStringExtra("USER_MAJOR") ?: "FARMASI"
+            // --- LOGIKA TITIK MERAH BARU ---
+            // Kita gunakan ?: "" agar pasti terbaca sebagai String dan tidak error
+            val major = sharedPref.getString("major", "") ?: ""
+            val phone = sharedPref.getString("phone", "") ?: ""
+            val badgeProfil = findViewById<View>(R.id.badgeProfilRedDot)
+
+            // Jika salah satu masih kosong, munculkan titik merah
+            if (major.isEmpty() || phone.isEmpty()) {
+                badgeProfil?.visibility = View.VISIBLE
+            } else {
+                badgeProfil?.visibility = View.GONE
             }
 
-            // Logika Ekstrak Inisial Otomatis (misal: "Budi Santoso" -> "BS")
+            // --- LOGIKA INISIAL & SUNTIK UI (YANG SEMPAT TERHAPUS) ---
             val inisial = namaLengkap.split(" ")
                 .filter { it.isNotEmpty() }
                 .map { it[0] }
                 .joinToString("")
                 .take(2).uppercase()
 
-            // Injeksi ke UI
             findViewById<TextView>(R.id.tvGreeting)?.text = "Halo, $namaLengkap !"
-            findViewById<TextView>(R.id.tvMajor)?.text = jurusan
+            // Jika prodi belum diisi, tampilkan peringatan di Beranda
+            findViewById<TextView>(R.id.tvMajor)?.text = if (major.isEmpty()) "PRODI BELUM DIISI" else major
             findViewById<TextView>(R.id.tvInitials)?.text = inisial
         }
-
         /**
          * FUNGSI B: TARIK DATA DASHBOARD (LAPORAN & RIWAYAT)
          */
@@ -152,11 +156,11 @@
          * FUNGSI C: HELPER KATEGORI
          */
         private fun setupCategory(layoutId: Int, title: String, iconRes: Int, bgColor: String) {
+            // Baris ini sangat penting agar 'root' tidak merah
             val root = findViewById<View>(layoutId) ?: return
 
             // Set Judul
             root.findViewById<TextView>(R.id.tvCategoryName)?.text = title
-
             // Set Background Kotak
             root.findViewById<CardView>(R.id.cvCategoryIcon)?.setCardBackgroundColor(Color.parseColor(bgColor))
 
@@ -164,5 +168,11 @@
             val iconImg = root.findViewById<ImageView>(R.id.ivCategoryIcon)
             iconImg?.setImageResource(iconRes)
             iconImg?.clearColorFilter()
+        }
+
+        override fun onResume() {
+            super.onResume()
+            // Paksa aplikasi mengecek ulang session setiap kali Beranda terbuka lagi
+            syncUserSession()
         }
     }

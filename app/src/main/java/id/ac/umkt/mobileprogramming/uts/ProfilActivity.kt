@@ -23,6 +23,9 @@ class ProfilActivity : AppCompatActivity() {
         // 2. Setup Tampilan Menu (Icon & Label)
         setupMenu()
 
+        // PANGGIL FUNGSI NAVIGASI DI SINI:
+        setupBottomNavigation()
+
         // --- TAMBAHAN BARU: LOGIKA KLIK MENU ---
 
         // Klik menu Informasi Pribadi
@@ -35,6 +38,23 @@ class ProfilActivity : AppCompatActivity() {
         findViewById<View>(R.id.menuFaq)?.setOnClickListener {
             val intent = Intent(this, PusatBantuanActivity::class.java)
             startActivity(intent)
+        }
+
+        // KLik menu Keamanan & Sandi
+        findViewById<View>(R.id.menuSandi)?.setOnClickListener {
+            val sandiFragment = BuatSandiBaruFragment()
+            supportFragmentManager.beginTransaction()
+                // Tambahkan animasi fade sederhana agar lebih mulus
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+                .add(android.R.id.content, sandiFragment)
+                .addToBackStack(null) // Memungkinkan user pakai tombol back bawaan HP
+                .commit()
+        }
+
+        // Klik menu Tentang Aplikasi
+        findViewById<View>(R.id.menuTentang)?.setOnClickListener {
+            // Tampilkan pop-up informasi aplikasi
+            Toast.makeText(this, "FIX IT - Campus Companion v1.2.0\nDikembangkan oleh Project Cumlaude", Toast.LENGTH_LONG).show()
         }
 
         // ----------------------------------------
@@ -58,7 +78,9 @@ class ProfilActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvProfileMajor)?.text = "$major, UMKT"
 
         // Inisial
-        val initials = name.split(" ").filter { it.isNotEmpty() }.map { it[0] }.joinToString("").take(2).uppercase()
+        val initials =
+            name.split(" ").filter { it.isNotEmpty() }.map { it[0] }.joinToString("").take(2)
+                .uppercase()
         findViewById<TextView>(R.id.tvProfileInitials)?.text = initials
     }
 
@@ -104,13 +126,39 @@ class ProfilActivity : AppCompatActivity() {
             visibility = View.VISIBLE
             text = "v1.2.0"
         }
+        // --- LOGIKA INDIKATOR WAJIB ISI PADA MENU INFORMASI PRIBADI ---
+        val sharedPref = getSharedPreferences("USER_SESSION", Context.MODE_PRIVATE)
+        val major = sharedPref.getString("major", "") ?: ""
+        val phone = sharedPref.getString("phone", "") ?: ""
+
+        val menuInfo = findViewById<View>(R.id.menuInfo)
+        val tvEkstraInfo = menuInfo?.findViewById<TextView>(R.id.tvMenuExtra)
+
+        if (major.isEmpty() || phone.isEmpty()) {
+            // Jika ada data yang kosong, munculkan peringatan merah di pinggir menu
+            tvEkstraInfo?.apply {
+                visibility = View.VISIBLE
+                text = "● Wajib Diisi"
+                setTextColor(Color.parseColor("#EF4444")) // Warna Merah Peringatan
+                setTypeface(null, android.graphics.Typeface.BOLD)
+            }
+        } else {
+            // Jika sudah diisi semua, sembunyikan peringatannya
+            tvEkstraInfo?.visibility = View.GONE
+        }
     }
 
     /**
      * HELPER FUNCTION: Menghindari copy-paste kode yang sama berulang kali.
      * Mengatur ID, Warna BG kotak, Gambar Ikon, dan Warna Ikon (Tint).
      */
-    private fun setupMenuItem(layoutId: Int, title: String, iconRes: Int, bgColorHex: String, iconTintHex: String) {
+    private fun setupMenuItem(
+        layoutId: Int,
+        title: String,
+        iconRes: Int,
+        bgColorHex: String,
+        iconTintHex: String
+    ) {
         val root = findViewById<View>(layoutId) ?: return
 
         // 1. Set Teks Judul
@@ -129,7 +177,10 @@ class ProfilActivity : AppCompatActivity() {
     }
 
     private fun logoutUser() {
-        // Hapus Session
+        // Hapus Sesi Firebase Auth
+        com.google.firebase.auth.FirebaseAuth.getInstance().signOut()
+
+        // Hapus Session Lokal (SharedPreferences)
         val sharedPref = getSharedPreferences("USER_SESSION", Context.MODE_PRIVATE)
         sharedPref.edit().clear().apply()
 
@@ -170,5 +221,55 @@ class ProfilActivity : AppCompatActivity() {
 
         // Tampilkan Dialog
         dialog.show()
+
+
+    }
+
+    private fun setupBottomNavigation() {
+        // Klik Beranda (Kembali ke MainActivity dan bersihkan tumpukan halaman)
+        findViewById<View>(R.id.navBeranda)?.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            // Ini kunci agar tidak force close:
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
+            finish() // Tutup halaman profil
+        }
+
+        // Klik Riwayat
+        findViewById<View>(R.id.navRiwayat)?.setOnClickListener {
+            val intent = Intent(this, RiwayatActivity::class.java)
+            startActivity(intent)
+            finish() // Tutup halaman profil
+        }
+
+        // Klik Notifikasi
+        findViewById<View>(R.id.navNotifikasi)?.setOnClickListener {
+            val intent = Intent(this, NotificationActivity::class.java)
+            startActivity(intent)
+            finish() // Tutup halaman profil
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 1. Refresh teks nama & inisial
+        loadUserProfile()
+
+        // 2. Refresh indikator merah
+        val sharedPref = getSharedPreferences("USER_SESSION", Context.MODE_PRIVATE)
+        val major = sharedPref.getString("major", "") ?: ""
+        val phone = sharedPref.getString("phone", "") ?: ""
+        val tvEkstraInfo = findViewById<View>(R.id.menuInfo)?.findViewById<TextView>(R.id.tvMenuExtra)
+
+        if (major.isEmpty() || phone.isEmpty()) {
+            tvEkstraInfo?.apply {
+                visibility = View.VISIBLE
+                text = "● Wajib Diisi"
+                setTextColor(android.graphics.Color.parseColor("#EF4444"))
+                setTypeface(null, android.graphics.Typeface.BOLD)
+            }
+        } else {
+            tvEkstraInfo?.visibility = View.GONE
+        }
     }
 }

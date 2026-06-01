@@ -27,13 +27,15 @@
             android:name=".LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:host="reset_sandi"
-                    android:scheme="fixit" />
+                    android:scheme="https"
+                    android:host="fixit-1845d.firebaseapp.com"
+                    android:pathPrefix="/__/auth/action" />
             </intent-filter>
         </activity>
 

@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -78,6 +77,7 @@
                     android:outlineSpotShadowColor="#2563EB">
 
                     <TextView
+                        android:id="@+id/tvInisialAvatar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -121,7 +121,9 @@
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/inter_bold" android:text="NAMA LENGKAP" android:textColor="#94A3B8" android:textSize="10sp" android:letterSpacing="0.05" />
                     <ImageView android:layout_width="12dp" android:layout_height="12dp" android:layout_alignParentEnd="true" android:src="@drawable/ic_lock_small" />
                 </RelativeLayout>
+
                 <TextView
+                    android:id="@+id/tvNamaLengkap"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="8dp"
@@ -137,7 +139,9 @@
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/inter_bold" android:text="NIM" android:textColor="#94A3B8" android:textSize="10sp" android:letterSpacing="0.05" />
                     <ImageView android:layout_width="12dp" android:layout_height="12dp" android:layout_alignParentEnd="true" android:src="@drawable/ic_lock_small" />
                 </RelativeLayout>
+
                 <TextView
+                    android:id="@+id/tvNim"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="8dp"
@@ -149,21 +153,35 @@
                     android:textColor="#475569"
                     android:textSize="15sp" />
 
-                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/inter_bold" android:text="PROGRAM STUDI" android:textColor="#94A3B8" android:textSize="10sp" android:letterSpacing="0.05" />
-                    <ImageView android:layout_width="12dp" android:layout_height="12dp" android:layout_alignParentEnd="true" android:src="@drawable/ic_lock_small" />
-                </RelativeLayout>
-                <TextView
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/inter_bold" android:text="PROGRAM STUDI" android:textColor="#0F172A" android:textSize="11sp" android:letterSpacing="0.05" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" android:fontFamily="@font/inter_bold" android:text="*" android:textColor="#2563EB" android:textSize="11sp" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_field_readonly"
-                    android:fontFamily="@font/inter_bold"
+                    android:background="@drawable/bg_field_editable"
                     android:gravity="center_vertical"
-                    android:paddingHorizontal="20dp"
-                    android:text="Teknik Informatika"
-                    android:textColor="#475569"
-                    android:textSize="15sp" />
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="20dp">
+
+                    <EditText
+                        android:id="@+id/etProgramStudi"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:fontFamily="@font/inter_extrabold"
+                        android:hint="Contoh: Teknik Informatika"
+                        android:textColorHint="#94A3B8"
+                        android:textColor="#0F172A"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -223,7 +241,8 @@
         android:id="@+id/bottomContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_fade_bottom" android:paddingHorizontal="24dp"
+        android:background="@drawable/bg_fade_bottom"
+        android:paddingHorizontal="24dp"
         android:paddingTop="16dp"
         android:paddingBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -244,5 +263,4 @@
             app:cornerRadius="16dp"
             app:elevation="8dp" />
     </FrameLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

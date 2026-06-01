@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.content.Intent
+import android.view.View
 
 class NotificationActivity : AppCompatActivity() {
 
@@ -19,6 +21,8 @@ class NotificationActivity : AppCompatActivity() {
         val data = getDynamicData()
         val adapter = NotificationAdapter(data)
         rvNotifications.adapter = adapter
+
+        setupBottomNavigation()
     }
 
     // [LOGIKA BARU] Fungsi untuk menggabungkan data dummy dengan data laporan real-time
@@ -48,6 +52,30 @@ class NotificationActivity : AppCompatActivity() {
         }
 
         return baseData
+    }
+
+    private fun setupBottomNavigation() {
+        // Klik Beranda
+        findViewById<View>(R.id.navBeranda)?.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
+            finish()
+        }
+
+        // Klik Riwayat
+        findViewById<View>(R.id.navRiwayat)?.setOnClickListener {
+            val intent = Intent(this, RiwayatActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        // Klik Profil
+        findViewById<View>(R.id.navProfil)?.setOnClickListener {
+            val intent = Intent(this, ProfilActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     // Ini fungsi dummy data bawaanmu yang tidak kuubah isinya sama sekali
@@ -97,4 +125,6 @@ class NotificationActivity : AppCompatActivity() {
             )
         )
     }
+
+
 }

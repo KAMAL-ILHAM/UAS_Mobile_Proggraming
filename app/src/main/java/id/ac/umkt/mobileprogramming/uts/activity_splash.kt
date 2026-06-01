@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth // <-- Tambahan import Firebase
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,10 +14,20 @@ class SplashActivity : AppCompatActivity() {
 
         // Delay selama 2.5 detik (2500 milidetik), lalu pindah ke halaman selanjutnya
         Handler(Looper.getMainLooper()).postDelayed({
-            // Nanti ubah LoginActivity::class.java menjadi OnboardingActivity::class.java
-            // Jika file onboarding-nya sudah kita buat di langkah berikutnya
-            val intent = Intent(this, OnboardingActivity::class.java) // Ganti ke Onboarding
-            startActivity(intent)
+
+            // --- TAMBAHAN BARU: CEK SESI LOGIN FIREBASE ---
+            val currentUser = FirebaseAuth.getInstance().currentUser
+
+            if (currentUser != null) {
+                // Skenario 1: Sudah Login -> Langsung gas ke Beranda
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            } else {
+                // Skenario 2: Belum Login -> Tetap jalankan kode aslimu ke Onboarding
+                val intent = Intent(this, OnboardingActivity::class.java)
+                startActivity(intent)
+            }
+
             finish() // Menutup Splash Screen agar tidak bisa di-back
         }, 2500)
     }
