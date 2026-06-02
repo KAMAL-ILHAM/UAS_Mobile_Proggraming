@@ -91,7 +91,6 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:background="@drawable/bg_button_next"
-            android:elevation="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">

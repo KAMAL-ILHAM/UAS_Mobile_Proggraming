@@ -14,18 +14,21 @@ class OnboardingDarkFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Menyambungkan dengan desain XML fragment_onboarding_dark yang sudah kamu buat
         val view = inflater.inflate(R.layout.activity_fragment_onboarding_dark, container, false)
 
-        // Mengambil ID area tombol "GESER UNTUK MULAI"
-        // ... di dalam onCreateView OnboardingDarkFragment.kt ...
-        val btnStart = view.findViewById<LinearLayout>(R.id.btnStartWrapper) // Asumsi ID tombol di XML
+        // Mengambil ID area tombol berdasarkan XML
+        val btnStart = view.findViewById<LinearLayout>(R.id.btnStartWrapper)
 
         btnStart.setOnClickListener {
-            // Pindah ke LoginActivity
             val intent = Intent(requireActivity(), LoginActivity::class.java)
             startActivity(intent)
-            requireActivity().finish() // Tutup onboarding agar tidak bisa kembali
+
+            // Menggunakan animasi naik ke atas yang baru dibuat
+            requireActivity().overridePendingTransition(
+                R.anim.premium_slide_scale_in,
+                R.anim.premium_fade_scale_out
+            )
+            requireActivity().finish() // Tutup onboarding agar tidak bisa di-back
         }
 
         return view

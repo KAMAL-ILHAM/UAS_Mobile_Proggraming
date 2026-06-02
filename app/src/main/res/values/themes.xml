@@ -3,6 +3,11 @@
     <style name="Base.Theme.UTS" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <!-- TRICK SPLASH SCREEN: Mengubah background putih bawaan sistem menjadi biru milikmu -->
+        <item name="android:windowSplashScreenBackground">#2563EB</item>
+        <!-- TRICK SPLASH SCREEN: Menyembunyikan logo bawaan sistem agar layarnya polos biru -->
+        <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
     </style>
 
     <style name="Theme.UTS" parent="Base.Theme.UTS" />
@@ -14,7 +19,8 @@
     </style>
 
     <style name="ThemeOverlay.UTS.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
+        <!-- Aku sekalian samakan warna background fullscreen ini dengan biru milikmu -->
+        <item name="fullscreenBackgroundColor">#2563EB</item>
         <item name="fullscreenTextColor">@color/light_blue_A200</item>
     </style>
 </resources>

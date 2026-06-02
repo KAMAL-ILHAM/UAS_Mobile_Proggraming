@@ -2,8 +2,8 @@ package id.ac.umkt.mobileprogramming.uts
 
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.viewpager2.widget.ViewPager2
 import kotlin.math.abs
 
@@ -20,54 +20,58 @@ class OnboardingActivity : AppCompatActivity() {
         val adapter = OnboardingAdapter(this)
         viewPager.adapter = adapter
 
-        // --- ANIMASI HYBRID PREMIUM: HORIZONTAL (1-2) & VERTICAL (3) ---
+        // --- ANIMASI PREMIUM STANDARD (DEPTH PAGE TRANSFORMER) ---
+        // Menghilangkan efek geser kaku, diganti dengan efek halaman mengecil dan tenggelam ke belakang
         viewPager.setPageTransformer { page, position ->
+            val minScale = 0.85f // Seberapa kecil halaman akan menyusut di belakang
+            val minAlpha = 0.5f  // Seberapa redup halaman saat di belakang
+
             page.apply {
                 val pageWidth = width
-                val pageHeight = height
-
                 when {
-                    position < -1 -> alpha = 0f
-                    position <= 1 -> {
-                        // LOGIKA UNIK: Deteksi transisi ke/dari halaman terakhir (index 2)
-                        val isTransitioningToOrFromLastPage = (viewPager.currentItem == 1 && position > 0) || (viewPager.currentItem == 2 && position < 0) || viewPager.currentItem == 2
+                    position < -1 -> { // Halaman jauh di kiri
+                        alpha = 0f
+                    }
+                    position <= 0 -> { // Halaman yang sedang aktif (bergeser ke kiri)
+                        alpha = 1f
+                        translationX = 0f
+                        translationZ = 0f
+                        scaleX = 1f
+                        scaleY = 1f
+                    }
+                    position <= 1 -> { // Halaman baru yang akan masuk dari kanan
+                        // Tahan halaman agar tidak bergeser secara normal
+                        translationX = pageWidth * -position
 
-                        if (isTransitioningToOrFromLastPage) {
-                            // !!! EFEK KE ATAS !!!
-                            // 1. Tahan pergerakan horizontal default agar tidak geser kanan/kiri
-                            translationX = pageWidth * -position
+                        // Buat seolah-olah halamannya ada di belakang layar
+                        translationZ = -1f
 
-                            // 2. Ubah menjadi pergerakan vertikal (naik/turun)
-                            translationY = position * pageHeight
-                        } else {
-                            // !!! EFEK SAMPING !!!
-                            // Halaman 1 dan 2 tetap horizontal biasa
-                            translationX = 0f
-                            translationY = 0f
-                        }
-
-                        // Fade & Scale yang sangat halus agar transisi terasa "mahal"
-                        alpha = 1 - abs(position)
-                        val scaleFactor = 0.95f + (1 - abs(position)) * 0.05f
+                        // Animasi memudar dan mengecil
+                        alpha = 1 - position
+                        val scaleFactor = minScale + (1 - minScale) * (1 - abs(position))
                         scaleX = scaleFactor
                         scaleY = scaleFactor
                     }
-                    else -> alpha = 0f
+                    else -> { // Halaman jauh di kanan
+                        alpha = 0f
+                    }
                 }
             }
         }
     }
 
-    // Fungsi pindah halaman lambat saat tombol diklik (Smooth & Slow)
+    // Fungsi pindah halaman lambat saat tombol diklik (Premium Smooth)
     fun moveToNextSlide() {
         val nextItem = viewPager.currentItem + 1
         if (nextItem < 3) {
-            // Kita buat fake drag kustom agar durasiperpindahannya lambat
             val fakeDragAnimator = ValueAnimator.ofFloat(0f, viewPager.width.toFloat())
             var lastValue = 0f
 
-            fakeDragAnimator.duration = 950 // Durasi hampir 1 detik agar sangat lambat
-            fakeDragAnimator.interpolator = AccelerateDecelerateInterpolator()
+            // Durasi disesuaikan menjadi 750ms agar pas (tidak terlalu cepat, tidak membosankan)
+            fakeDragAnimator.duration = 750
+
+            // Menggunakan interpolator premium standar Material Design (Cepat di awal, melambat sangat halus di akhir)
+            fakeDragAnimator.interpolator = FastOutSlowInInterpolator()
 
             fakeDragAnimator.addUpdateListener { valueAnimator ->
                 val currentValue = valueAnimator.animatedValue as Float

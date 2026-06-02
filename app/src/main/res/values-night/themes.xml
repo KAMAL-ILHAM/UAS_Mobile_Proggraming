@@ -1,12 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme untuk Night Mode. -->
     <style name="Base.Theme.UTS" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- <item name="colorPrimary">@color/colorPrimary</item> -->
+
+        <!-- TRICK SPLASH SCREEN (NIGHT MODE) -->
+        <!-- Memanggil warna biru yang sama (#2563EB) dari colors.xml agar transisinya tetap mulus walau HP mode gelap -->
+        <item name="android:windowSplashScreenBackground">@color/primary_blue</item>
+        <!-- Menyembunyikan logo bawaan sistem menggunakan warna transparan dari colors.xml -->
+        <item name="android:windowSplashScreenAnimatedIcon">@color/transparent</item>
     </style>
 
     <style name="ThemeOverlay.UTS.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_900</item>
+        <!-- Samakan juga background container ini dengan warna biru utamamu -->
+        <item name="fullscreenBackgroundColor">@color/primary_blue</item>
         <item name="fullscreenTextColor">@color/light_blue_A400</item>
     </style>
 </resources>

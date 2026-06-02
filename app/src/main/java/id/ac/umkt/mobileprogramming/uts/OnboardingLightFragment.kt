@@ -1,5 +1,6 @@
 package id.ac.umkt.mobileprogramming.uts
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +14,12 @@ import androidx.fragment.app.Fragment
 class OnboardingLightFragment : Fragment() {
 
     companion object {
-        // Tambahkan parameter imageResId
         fun newInstance(title: String, desc: String, imageResId: Int, position: Int): OnboardingLightFragment {
             val fragment = OnboardingLightFragment()
             val args = Bundle()
             args.putString("TITLE", title)
             args.putString("DESC", desc)
-            args.putInt("IMAGE", imageResId) // Simpan gambar
+            args.putInt("IMAGE", imageResId)
             args.putInt("POSITION", position)
             fragment.arguments = args
             return fragment
@@ -34,24 +34,31 @@ class OnboardingLightFragment : Fragment() {
 
         val tvTitle = view.findViewById<TextView>(R.id.tvTitleOnboarding)
         val tvDesc = view.findViewById<TextView>(R.id.tvDescOnboarding)
-        val ivOnboarding = view.findViewById<ImageView>(R.id.ivOnboarding) // Ambil ImageView
+        val ivOnboarding = view.findViewById<ImageView>(R.id.ivOnboarding)
         val btnNext = view.findViewById<FrameLayout>(R.id.btnNextOnboarding)
 
-        // Set Judul, Deskripsi, dan GAMBAR
         tvTitle.text = arguments?.getString("TITLE")
         tvDesc.text = arguments?.getString("DESC")
 
-        // Pasang gambar sesuai slide
         val imageRes = arguments?.getInt("IMAGE") ?: R.drawable.bg_splash_logo
         ivOnboarding.setImageResource(imageRes)
 
-        // Set Titik Indikator
         val position = arguments?.getInt("POSITION") ?: 0
         setupDots(view, position)
 
-        // Saat tombol diklik, suruh Activity geser ke slide berikutnya
+        // --- PERBAIKAN LOGIKA TOMBOL NEXT ---
         btnNext.setOnClickListener {
-            (requireActivity() as OnboardingActivity).moveToNextSlide()
+            if (position < 2) {
+                // Jika masih di slide 1 atau 2, suruh Activity geser layar perlahan
+                (requireActivity() as OnboardingActivity).moveToNextSlide()
+            } else {
+                // Jika ini adalah slide 3 (terakhir), langsung pindah ke Login
+                val intent = Intent(requireActivity(), LoginActivity::class.java)
+                startActivity(intent)
+
+                // Menutup OnboardingActivity agar tidak bisa di-back
+                requireActivity().finish()
+            }
         }
 
         return view
@@ -74,6 +81,7 @@ class OnboardingLightFragment : Fragment() {
         dot3.layoutParams = inactiveParams
         dot3.setBackgroundResource(R.drawable.bg_dot_inactive)
 
+        // --- PERBAIKAN: Menambahkan kondisi untuk slide ke-3 ---
         when (position) {
             0 -> {
                 dot1.layoutParams = activeParams
@@ -82,6 +90,10 @@ class OnboardingLightFragment : Fragment() {
             1 -> {
                 dot2.layoutParams = activeParams
                 dot2.setBackgroundResource(R.drawable.bg_dot_active)
+            }
+            2 -> {
+                dot3.layoutParams = activeParams
+                dot3.setBackgroundResource(R.drawable.bg_dot_active)
             }
         }
     }
