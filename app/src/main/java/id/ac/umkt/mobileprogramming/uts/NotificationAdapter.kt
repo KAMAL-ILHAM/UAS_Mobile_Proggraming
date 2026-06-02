@@ -17,18 +17,31 @@ sealed class NotificationItem {
         val title: String,
         val desc: String,
         val time: String,
-        val isUnread: Boolean,
+        var isUnread: Boolean,
         val iconRes: Int,
-        val iconBgColor: Int
+        val iconBgColor: Int,
+        val documentId: String = "",
+        val tiket: String = "",
+        val kategori: String = "",
+        val lokasi: String = "",
+        val status: String = ""
     ) : NotificationItem()
 }
 
-class NotificationAdapter(private val items: List<NotificationItem>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NotificationAdapter(
+    private var items: List<NotificationItem>,
+    private val onNotificationClick: (NotificationItem.Data) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEM = 1
+    }
+
+    // Fungsi untuk memperbarui list saat filter atau status dibaca berubah
+    fun updateData(newItems: List<NotificationItem>) {
+        this.items = newItems
+        notifyDataSetChanged()
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -58,7 +71,6 @@ class NotificationAdapter(private val items: List<NotificationItem>) :
 
     inner class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val tvSectionHeader: TextView = view.findViewById(R.id.tvSectionHeader)
-
         fun bind(item: NotificationItem.Header) {
             tvSectionHeader.text = item.title
         }
@@ -76,10 +88,8 @@ class NotificationAdapter(private val items: List<NotificationItem>) :
             tvTitle.text = item.title
             tvDesc.text = item.desc
             tvTime.text = item.time
-
             ivIcon.setImageResource(item.iconRes)
             iconContainer.backgroundTintList = ContextCompat.getColorStateList(itemView.context, item.iconBgColor)
-
             dotUnread.visibility = if (item.isUnread) View.VISIBLE else View.INVISIBLE
 
             tvTitle.setTextColor(
@@ -89,20 +99,28 @@ class NotificationAdapter(private val items: List<NotificationItem>) :
                 )
             )
 
-            // --- PERBAIKAN LOGIKA KLIK ---
             itemView.setOnClickListener {
                 val context = itemView.context
 
-                // Cek judul notifikasi untuk menentukan halaman tujuan
-                val intent = if (item.title == "Pemeliharaan Server") {
-                    // Jika yang diklik adalah "Pemeliharaan Server", arahkan ke Pengumuman Detail
+                // Pisahkan logika pengumuman sistem dan detail laporan
+                val intent = if (item.title.contains("Pemeliharaan") || item.title.contains("Sistem")) {
                     Intent(context, PengumumanDetailActivity::class.java)
                 } else {
-                    // Jika yang diklik lainnya (contoh: Teknisi Menuju Lokasi), arahkan ke Detail biasa
-                    Intent(context, NotificationDetailActivity::class.java)
+                    Intent(context, NotificationDetailActivity::class.java).apply {
+                        // Bawa data ini ke halaman NotificationDetailActivity
+                        putExtra("EXTRA_TITLE", item.title)
+                        putExtra("EXTRA_DESC", item.desc)
+                        putExtra("EXTRA_TIME", item.time)
+                        putExtra("EXTRA_TIKET", item.tiket)
+                        putExtra("EXTRA_KATEGORI", item.kategori)
+                        putExtra("EXTRA_LOKASI", item.lokasi)
+                        putExtra("EXTRA_DOC_ID", item.documentId)
+                    }
                 }
-
                 context.startActivity(intent)
+
+                // Trigger logika baca (menghilangkan titik biru)
+                onNotificationClick(item)
             }
         }
     }

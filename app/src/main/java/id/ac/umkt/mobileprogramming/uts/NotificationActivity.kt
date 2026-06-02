@@ -1,130 +1,274 @@
 package id.ac.umkt.mobileprogramming.uts
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.content.Intent
-import android.view.View
+import android.widget.LinearLayout
+import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class NotificationActivity : AppCompatActivity() {
+
+    private lateinit var adapter: NotificationAdapter
+    private var allRawData = mutableListOf<NotificationItem.Data>()
+    private var currentFilter = "SEMUA"
+    private lateinit var db: FirebaseFirestore
+
+    // Nama file untuk SharedPreferences khusus Notifikasi
+    private val PREFS_NOTIF = "NOTIF_PREFS"
+    private val KEY_READ_IDS = "READ_IDS"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notification)
 
+        db = FirebaseFirestore.getInstance()
+
         val rvNotifications = findViewById<RecyclerView>(R.id.rvNotifications)
         rvNotifications.layoutManager = LinearLayoutManager(this)
 
-        // Kita panggil fungsi dinamis yang baru
-        val data = getDynamicData()
-        val adapter = NotificationAdapter(data)
+        adapter = NotificationAdapter(emptyList()) { clickedItem ->
+            if (clickedItem.isUnread) {
+                clickedItem.isUnread = false
+                // Simpan ID dokumen ini ke memori lokal agar status "dibaca"-nya permanen
+                saveReadNotification(clickedItem.documentId)
+                applyFilter(currentFilter)
+            }
+        }
         rvNotifications.adapter = adapter
 
         setupBottomNavigation()
+        setupFilterLogic()
+
+        fetchRealNotifications()
     }
 
-    // [LOGIKA BARU] Fungsi untuk menggabungkan data dummy dengan data laporan real-time
-    private fun getDynamicData(): List<NotificationItem> {
-        // 1. Ambil data dummy bawaan sebagai dasar
-        val baseData = getDummyData().toMutableList()
+    // --- FUNGSI MEMORI LOKAL (Baru) ---
+    private fun getReadNotifications(): MutableSet<String> {
+        val prefs = getSharedPreferences(PREFS_NOTIF, Context.MODE_PRIVATE)
+        // Ambil data set yang ada, atau buat set kosong jika belum ada
+        return prefs.getStringSet(KEY_READ_IDS, emptySet())?.toMutableSet() ?: mutableSetOf()
+    }
 
-        // 2. Cek apakah ada laporan baru dari memori HP
-        val sharedPref = getSharedPreferences("DB_LOKAL_SEMENTARA", Context.MODE_PRIVATE)
-        val savedKategori = sharedPref.getString("kategori", null)
+    private fun saveReadNotification(docId: String) {
+        val prefs = getSharedPreferences(PREFS_NOTIF, Context.MODE_PRIVATE)
+        val currentReadIds = getReadNotifications()
+        currentReadIds.add(docId)
+        prefs.edit().putStringSet(KEY_READ_IDS, currentReadIds).apply()
+    }
 
-        // 3. Jika ada laporan, buatkan notifikasinya dan taruh di paling atas
-        if (savedKategori != null) {
-            val savedLokasi = sharedPref.getString("lokasi", "Area Kampus")
+    private fun saveAllReadNotifications(docIds: List<String>) {
+        val prefs = getSharedPreferences(PREFS_NOTIF, Context.MODE_PRIVATE)
+        val currentReadIds = getReadNotifications()
+        currentReadIds.addAll(docIds)
+        prefs.edit().putStringSet(KEY_READ_IDS, currentReadIds).apply()
+    }
+    // -----------------------------------
 
-            val newNotification = NotificationItem.Data(
-                title = "Laporan Berhasil Diterima",
-                desc = "Pengaduan $savedKategori di $savedLokasi telah masuk ke sistem kami dan sedang dalam antrean pengecekan teknisi.",
-                time = "Baru saja",
-                isUnread = true,
-                iconRes = R.drawable.ic_document, // Menggunakan ikon dokumen yang sudah ada
-                iconBgColor = R.color.bgIconBlue // Warna background biru agar menonjol
-            )
+    private fun fetchRealNotifications() {
+        val sharedPref = getSharedPreferences("USER_SESSION", Context.MODE_PRIVATE)
+        val namaUserAktif = sharedPref.getString("full_name", "")?.trim() ?: ""
 
-            // Masukkan notifikasi baru di urutan ke-2 (Index 1), tepat di bawah tulisan Header "BARU (HARI INI)"
-            baseData.add(1, newNotification)
+        if (namaUserAktif.isEmpty()) return
+
+        db.collection("laporan")
+            .whereEqualTo("nama_pelapor", namaUserAktif)
+            .get()
+            .addOnSuccessListener { documents ->
+                val realDataList = mutableListOf<NotificationItem.Data>()
+
+                // Ambil daftar ID yang sudah pernah dibaca dari memori HP
+                val readIds = getReadNotifications()
+
+                // Notifikasi Sistem Dummy
+                val isSystemRead = readIds.contains("SYS-001")
+                realDataList.add(
+                    NotificationItem.Data(
+                        title = "Sistem Terhubung",
+                        desc = "Layanan sinkronisasi cloud berjalan normal. Data aman.",
+                        time = "08:00",
+                        isUnread = !isSystemRead, // Cek status baca
+                        iconRes = R.drawable.ic_speaker,
+                        iconBgColor = R.color.bgIconBlue,
+                        documentId = "SYS-001" // ID Khusus Dummy
+                    )
+                )
+
+                val sortedDocs = documents.sortedByDescending { it.getTimestamp("timestamp")?.toDate()?.time ?: 0L }
+
+                for (doc in sortedDocs) {
+                    val status = doc.getString("status") ?: "SEDANG DIPROSES"
+                    val kategori = doc.getString("kategori") ?: "Fasilitas"
+                    val lokasi = doc.getString("lokasi") ?: "Kampus"
+                    val tiket = doc.getString("nomor_tiket") ?: "---"
+                    val date = doc.getTimestamp("timestamp")?.toDate()
+
+                    val timeString = if (date != null) {
+                        val today = Calendar.getInstance()
+                        val docDate = Calendar.getInstance().apply { time = date }
+
+                        if (today.get(Calendar.YEAR) == docDate.get(Calendar.YEAR) &&
+                            today.get(Calendar.DAY_OF_YEAR) == docDate.get(Calendar.DAY_OF_YEAR)) {
+                            "Hari ini, " + SimpleDateFormat("HH:mm", Locale("id", "ID")).format(date)
+                        } else {
+                            SimpleDateFormat("dd MMM", Locale("id", "ID")).format(date)
+                        }
+                    } else {
+                        "Baru saja"
+                    }
+
+                    val (iconRes, iconBg) = when {
+                        status.contains("SELESAI", true) -> Pair(R.drawable.ic_check_circle, R.color.bgIconGreen)
+                        status.contains("BATAL", true) -> Pair(R.drawable.ic_cancel, R.color.bgIconRed)
+                        status.contains("TEKNISI", true) -> Pair(R.drawable.ic_technician, R.color.bgIconYellow)
+                        else -> Pair(R.drawable.ic_document, R.color.bgIconBlue)
+                    }
+
+                    // Logika penentu: Cek apakah ID dokumen dari Firebase ada di memori HP
+                    val isDocRead = readIds.contains(doc.id)
+
+                    realDataList.add(
+                        NotificationItem.Data(
+                            title = "Update Status: $kategori",
+                            desc = "Laporan $tiket di $lokasi saat ini $status.",
+                            time = timeString,
+                            isUnread = !isDocRead, // Jika belum ada di memori, berarti belum dibaca
+                            iconRes = iconRes,
+                            iconBgColor = iconBg,
+                            documentId = doc.id,
+                            tiket = tiket,
+                            kategori = kategori,
+                            lokasi = lokasi,
+                            status = status
+                        )
+                    )
+                }
+
+                allRawData = realDataList
+                applyFilter(currentFilter)
+            }
+            .addOnFailureListener {
+                // Handle error
+            }
+    }
+
+    private fun setupFilterLogic() {
+        val btnSemua = findViewById<TextView>(R.id.btnTabSemua)
+        val btnBelumDibaca = findViewById<TextView>(R.id.btnTabBelumDibaca)
+        val btnSistem = findViewById<TextView>(R.id.btnTabSistem)
+        val btnMarkAllRead = findViewById<ImageButton>(R.id.btnMarkRead)
+
+        updateUnreadBadge()
+
+        btnSemua?.setOnClickListener { applyFilter("SEMUA") }
+        btnBelumDibaca?.setOnClickListener { applyFilter("BELUM_DIBACA") }
+        btnSistem?.setOnClickListener { applyFilter("SISTEM") }
+
+        // Fitur Tandai Semua Dibaca
+        btnMarkAllRead?.setOnClickListener {
+            // Ambil semua ID yang ada di list saat ini
+            val allIds = allRawData.map { it.documentId }
+            // Simpan semua ID tersebut ke memori lokal
+            saveAllReadNotifications(allIds)
+
+            // Ubah UI
+            allRawData.forEach { it.isUnread = false }
+            applyFilter(currentFilter)
+        }
+    }
+
+    private fun applyFilter(filterType: String) {
+        currentFilter = filterType
+
+        val filteredData = when (filterType) {
+            "BELUM_DIBACA" -> allRawData.filter { it.isUnread }
+            "SISTEM" -> allRawData.filter {
+                it.title.contains("Sistem", true) ||
+                        it.title.contains("Server", true) ||
+                        it.title.contains("Pemeliharaan", true)
+            }
+            else -> allRawData
         }
 
-        return baseData
+        adapter.updateData(groupDataWithHeaders(filteredData))
+        updateUnreadBadge()
+        updateTabVisuals()
+    }
+
+    private fun updateTabVisuals() {
+        val btnSemua = findViewById<TextView>(R.id.btnTabSemua)
+        val btnBelumDibaca = findViewById<TextView>(R.id.btnTabBelumDibaca)
+        val btnSistem = findViewById<TextView>(R.id.btnTabSistem)
+
+        val tabs = listOf(btnSemua, btnBelumDibaca, btnSistem)
+        tabs.forEach {
+            it?.setBackgroundResource(R.drawable.bg_tab_inactive)
+            it?.setTextColor(ContextCompat.getColor(this, R.color.textSecondary))
+        }
+
+        val activeTab = when(currentFilter) {
+            "BELUM_DIBACA" -> btnBelumDibaca
+            "SISTEM" -> btnSistem
+            else -> btnSemua
+        }
+
+        activeTab?.setBackgroundResource(R.drawable.bg_tab_active)
+        activeTab?.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+    }
+
+    private fun groupDataWithHeaders(dataList: List<NotificationItem.Data>): List<NotificationItem> {
+        val groupedList = mutableListOf<NotificationItem>()
+
+        val baru = dataList.filter { it.time.contains("Hari ini", true) || it.time.contains("Baru", true) || it.time.contains("08:00") }
+        val sebelumnya = dataList.filter { !it.time.contains("Hari ini", true) && !it.time.contains("Baru", true) && !it.time.contains("08:00") }
+
+        if (baru.isNotEmpty()) {
+            groupedList.add(NotificationItem.Header("BARU (HARI INI)"))
+            groupedList.addAll(baru)
+        }
+        if (sebelumnya.isNotEmpty()) {
+            groupedList.add(NotificationItem.Header("SEBELUMNYA"))
+            groupedList.addAll(sebelumnya)
+        }
+
+        return groupedList
+    }
+
+    private fun updateUnreadBadge() {
+        val unreadCount = allRawData.count { it.isUnread }
+        val tvTabBelumDibaca = findViewById<TextView>(R.id.btnTabBelumDibaca)
+
+        if (unreadCount > 0) {
+            tvTabBelumDibaca?.text = "Belum Dibaca ($unreadCount)"
+        } else {
+            tvTabBelumDibaca?.text = "Belum Dibaca"
+        }
     }
 
     private fun setupBottomNavigation() {
-        // Klik Beranda
-        findViewById<View>(R.id.navBeranda)?.setOnClickListener {
+        findViewById<LinearLayout>(R.id.navBeranda)?.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
             finish()
         }
-
-        // Klik Riwayat
-        findViewById<View>(R.id.navRiwayat)?.setOnClickListener {
+        findViewById<LinearLayout>(R.id.navRiwayat)?.setOnClickListener {
             val intent = Intent(this, RiwayatActivity::class.java)
             startActivity(intent)
             finish()
         }
-
-        // Klik Profil
-        findViewById<View>(R.id.navProfil)?.setOnClickListener {
+        findViewById<LinearLayout>(R.id.navProfil)?.setOnClickListener {
             val intent = Intent(this, ProfilActivity::class.java)
             startActivity(intent)
             finish()
         }
     }
-
-    // Ini fungsi dummy data bawaanmu yang tidak kuubah isinya sama sekali
-    private fun getDummyData(): List<NotificationItem> {
-        return listOf(
-            NotificationItem.Header("BARU (HARI INI)"),
-            NotificationItem.Data(
-                title = "Teknisi Menuju Lokasi",
-                desc = "Bpk. Sumardi sedang menuju Gedung D untuk memeriksa AC Lab Komputer 2. Laporan #EIO-8821.",
-                time = "10:30",
-                isUnread = true,
-                iconRes = R.drawable.ic_technician,
-                iconBgColor = R.color.bgIconYellow
-            ),
-            NotificationItem.Data(
-                title = "Pemeliharaan Server",
-                desc = "Layanan pelaporan akan dihentikan sementara malam ini pukul 23:00 - 02:00 WITA.",
-                time = "08:00",
-                isUnread = true,
-                iconRes = R.drawable.ic_speaker,
-                iconBgColor = R.color.bgIconBlue
-            ),
-            NotificationItem.Header("SEBELUMNYA"),
-            NotificationItem.Data(
-                title = "Laporan Selesai Diperbaiki",
-                desc = "Perbaikan Lampu Koridor Gedung E telah selesai. Berikan penilaian Anda untuk teknisi.",
-                time = "Kemarin",
-                isUnread = false,
-                iconRes = R.drawable.ic_check_circle,
-                iconBgColor = R.color.bgIconGreen
-            ),
-            NotificationItem.Data(
-                title = "Laporan Diterima",
-                desc = "Laporan kerusakan Kran Air (#EIO-8705) telah tervalidasi dan masuk antrean perbaikan.",
-                time = "22 Apr",
-                isUnread = false,
-                iconRes = R.drawable.ic_document,
-                iconBgColor = R.color.bgIconGray
-            ),
-            NotificationItem.Data(
-                title = "Laporan Dibatalkan",
-                desc = "Laporan Proyektor Blur (#EIO-8612) dibatalkan.",
-                time = "20 Apr",
-                isUnread = false,
-                iconRes = R.drawable.ic_cancel,
-                iconBgColor = R.color.bgIconRed
-            )
-        )
-    }
-
-
 }

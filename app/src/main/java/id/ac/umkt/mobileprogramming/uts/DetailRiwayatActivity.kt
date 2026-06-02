@@ -1,46 +1,141 @@
 package id.ac.umkt.mobileprogramming.uts
 
-import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class DetailRiwayatActivity : AppCompatActivity() {
+
+    private lateinit var db: FirebaseFirestore
+    private var documentId: String = ""
+    private var nomorTiket: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_riwayat)
 
-        // 1. Kenalkan tombol back
-        val btnBack: FrameLayout = findViewById(R.id.btnBackDetail)
-        btnBack.setOnClickListener {
+        db = FirebaseFirestore.getInstance()
+
+        documentId = intent.getStringExtra("DOCUMENT_ID") ?: ""
+        nomorTiket = intent.getStringExtra("NOMOR_TIKET") ?: ""
+
+        findViewById<FrameLayout>(R.id.btnBackDetail)?.setOnClickListener { finish() }
+
+        fetchDetailLaporan()
+    }
+
+    private fun fetchDetailLaporan() {
+        if (documentId.isEmpty()) {
+            Toast.makeText(this, "ID Laporan tidak valid atau hilang.", Toast.LENGTH_SHORT).show()
             finish()
+            return
         }
 
-        // 2. Tarik data dari Database Lokal Sementara
-        val sharedPref = getSharedPreferences("DB_LOKAL_SEMENTARA", Context.MODE_PRIVATE)
-        val savedKategori = sharedPref.getString("kategori", "Fasilitas Umum")
-        // Catatan: Karena di form awal nggak ada ID Laporan, kita buat format ID sederhana pakai Waktu
-        val fakeId = "EIO-${System.currentTimeMillis().toString().takeLast(4)}"
-        val savedStatus = sharedPref.getString("status", "SELESAI") // Sesuai dengan desain badgeStatusDetail
-        val savedDetail = sharedPref.getString("detail", "Tidak ada deskripsi tambahan.")
+        db.collection("laporan").document(documentId).get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
 
-        // 3. Suntikkan data ke View XML (Sudah Disesuaikan dengan XML kamu)
-        findViewById<TextView>(R.id.tvDetailTitle)?.text = savedKategori
-        findViewById<TextView>(R.id.tvReportId)?.text = "ID: $fakeId"
+                    val dbKategori = document.getString("kategori") ?: "Fasilitas"
+                    val dbLokasi = document.getString("lokasi") ?: "Lokasi Tidak Diketahui"
+                    val dbStatus = document.getString("status") ?: "SEDANG DIPROSES"
+                    val dbDetail = document.getString("detail") ?: "Tidak ada deskripsi."
+                    val dbNomorTiket = document.getString("nomor_tiket") ?: nomorTiket
 
-        // Membersihkan format status (misal sebelumnya "● SEDANG DIPROSES" jadi "SEDANG DIPROSES")
-        val cleanStatus = savedStatus?.replace("● ", "") ?: "DIPROSES"
-        findViewById<TextView>(R.id.badgeStatusDetail)?.text = cleanStatus
+                    val date = document.getTimestamp("timestamp")?.toDate()
+                    val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))
+                    val dateTimeFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
 
-        val parentLayout = findViewById<android.widget.LinearLayout>(R.id.bottomNavDetail).parent as androidx.constraintlayout.widget.ConstraintLayout
-        val scrollView = parentLayout.getChildAt(1) as android.widget.ScrollView
-        val linearLayout = scrollView.getChildAt(0) as android.widget.LinearLayout
-        val textDetailNode = linearLayout.getChildAt(1) as TextView
-        textDetailNode.text = "\"$savedDetail\""
+                    val dateString = if (date != null) dateFormat.format(date) else "-"
+                    val dateTimeString = if (date != null) "${dateTimeFormat.format(date)} WITA" else "-"
 
-        val textLokasiNode = linearLayout.getChildAt(0) as TextView
-        val savedLokasi = sharedPref.getString("lokasi", "Gedung UMKT")
-        textLokasiNode.text = savedLokasi
+                    findViewById<TextView>(R.id.tvReportId)?.text = "ID: $dbNomorTiket"
+                    findViewById<TextView>(R.id.tvDetailTitle)?.text = dbKategori
+                    findViewById<TextView>(R.id.tvDetailTanggal)?.text = dateString
+                    findViewById<TextView>(R.id.tvDetailLokasi)?.text = dbLokasi
+                    findViewById<TextView>(R.id.tvDetailDeskripsi)?.text = "\"$dbDetail\""
+
+                    val tvStatus = findViewById<TextView>(R.id.badgeStatusDetail)
+                    val cleanStatus = dbStatus.replace("● ", "").uppercase()
+                    tvStatus?.text = cleanStatus
+
+                    val bgDrawable = GradientDrawable().apply { cornerRadius = 12f }
+
+                    // Elemen Jejak Penyelesaian
+                    val bgIconTimeline1 = findViewById<FrameLayout>(R.id.bgIconTimeline1)
+                    val ivIconTimeline1 = findViewById<ImageView>(R.id.ivIconTimeline1)
+                    val tvTitleTimeline1 = findViewById<TextView>(R.id.tvTitleTimeline1)
+                    val tvDescTimeline1 = findViewById<TextView>(R.id.tvDescTimeline1)
+                    val tvDateTimeline1 = findViewById<TextView>(R.id.tvDateTimeline1)
+                    val tvDateTimeline2 = findViewById<TextView>(R.id.tvDateTimeline2)
+
+                    tvDateTimeline2?.text = dateTimeString
+
+                    // Logika Dinamis Status & Jejak Penyelesaian
+                    when {
+                        cleanStatus.contains("SELESAI") -> {
+                            tvStatus?.setTextColor(Color.parseColor("#10B981"))
+                            bgDrawable.setColor(Color.parseColor("#E6F9F3"))
+
+                            bgIconTimeline1?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#10B981"))
+                            ivIconTimeline1?.setImageResource(R.drawable.ic_check_timeline)
+                            tvTitleTimeline1?.text = "Perbaikan Selesai"
+                            tvDescTimeline1?.text = "Perbaikan telah selesai dilakukan. Fasilitas berfungsi normal."
+                            tvDateTimeline1?.text = dateTimeString
+                            tvDateTimeline1?.setTextColor(Color.parseColor("#10B981"))
+                        }
+                        cleanStatus.contains("BATAL") || cleanStatus.contains("TOLAK") -> {
+                            tvStatus?.setTextColor(Color.parseColor("#EF4444"))
+                            bgDrawable.setColor(Color.parseColor("#FEE2E2"))
+
+                            bgIconTimeline1?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EF4444"))
+                            ivIconTimeline1?.setImageResource(R.drawable.ic_cancel)
+                            tvTitleTimeline1?.text = "Laporan Dibatalkan"
+                            tvDescTimeline1?.text = "Laporan ini dibatalkan atau ditolak oleh sistem/admin."
+                            tvDateTimeline1?.text = dateTimeString
+                            tvDateTimeline1?.setTextColor(Color.parseColor("#EF4444"))
+                        }
+                        else -> {
+                            tvStatus?.setTextColor(Color.parseColor("#10B981"))
+                            bgDrawable.setColor(Color.parseColor("#E6F9F3"))
+
+                            bgIconTimeline1?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FBBC05"))
+                            ivIconTimeline1?.setImageResource(R.drawable.ic_technician2)
+                            tvTitleTimeline1?.text = "Sedang Diproses"
+                            tvDescTimeline1?.text = "Laporan sedang dalam antrean atau sedang ditinjau oleh teknisi."
+                            tvDateTimeline1?.text = "Menunggu pembaruan..."
+                            tvDateTimeline1?.setTextColor(Color.parseColor("#FBBC05"))
+                        }
+                    }
+                    tvStatus?.background = bgDrawable
+
+                    val ivBigIcon = findViewById<ImageView>(R.id.ivBigIcon)
+                    val iconRes = when (dbKategori.lowercase()) {
+                        "elektronik" -> R.drawable.ic_monitor
+                        "furnitur" -> R.drawable.ic_furnitur
+                        "sanitasi" -> R.drawable.ic_sanitasi
+                        "jaringan" -> R.drawable.ic_jaringan
+                        "gedung" -> R.drawable.ic_gedung
+                        "area luar" -> R.drawable.ic_outdoor
+                        else -> R.drawable.ic_document
+                    }
+                    ivBigIcon?.setImageResource(iconRes)
+
+                } else {
+                    Toast.makeText(this, "Data laporan tidak ditemukan.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Gagal sinkronisasi data: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

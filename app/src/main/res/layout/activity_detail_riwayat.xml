@@ -80,6 +80,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
+            android:id="@+id/tvDetailTanggal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -124,6 +125,7 @@
             android:paddingBottom="24dp">
 
             <TextView
+                android:id="@+id/tvDetailLokasi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_bold"
@@ -135,6 +137,7 @@
                 android:drawablePadding="8dp" />
 
             <TextView
+                android:id="@+id/tvDetailDeskripsi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -235,11 +238,13 @@
                         android:gravity="center_horizontal"
                         android:orientation="vertical">
                         <FrameLayout
+                            android:id="@+id/bgIconTimeline1"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:background="@drawable/bg_circle_dark_transparent"
                             android:backgroundTint="#10B981">
                             <ImageView
+                                android:id="@+id/ivIconTimeline1"
                                 android:layout_width="12dp"
                                 android:layout_height="12dp"
                                 android:layout_gravity="center"
@@ -259,6 +264,7 @@
                         android:orientation="vertical"
                         android:paddingBottom="24dp">
                         <TextView
+                            android:id="@+id/tvTitleTimeline1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/inter_bold"
@@ -266,6 +272,7 @@
                             android:textColor="#0F172A"
                             android:textSize="15sp" />
                         <TextView
+                            android:id="@+id/tvDescTimeline1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -274,6 +281,7 @@
                             android:textColor="#64748B"
                             android:textSize="13sp" />
                         <TextView
+                            android:id="@+id/tvDateTimeline1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
@@ -329,6 +337,7 @@
                             android:textColor="#94A3B8"
                             android:textSize="13sp" />
                         <TextView
+                            android:id="@+id/tvDateTimeline2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"

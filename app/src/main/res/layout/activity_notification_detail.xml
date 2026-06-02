@@ -48,18 +48,23 @@
             android:padding="24dp">
 
             <FrameLayout
+                android:id="@+id/bgIconDetail"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_gravity="center"
                 android:background="@drawable/bg_circle_yellow"
                 android:layout_marginTop="16dp">
+
                 <ImageView
+                    android:id="@+id/ivIconDetail"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_technician2" /> </FrameLayout>
+                    android:src="@drawable/ic_technician2" />
+            </FrameLayout>
 
             <TextView
+                android:id="@+id/tvTitleDetail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -70,6 +75,7 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/tvTimeDetail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -88,11 +94,12 @@
                 android:background="#F1F5F9" />
 
             <TextView
+                android:id="@+id/tvDescDetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_regular"
                 android:lineSpacingExtra="6dp"
-                android:text="Halo Kamal, teknisi kami Bpk. Sumardi saat ini sedang menuju ke lokasi untuk melakukan pengecekan dan perbaikan fasilitas yang Anda laporkan. Mohon pastikan ruangan dapat diakses."
+                android:text="Halo Kamal, teknisi kami Bpk. Sumardi..."
                 android:textColor="#475569"
                 android:textSize="14sp" />
 
@@ -116,7 +123,9 @@
                         android:textColor="#94A3B8"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"/>
+
                     <TextView
+                        android:id="@+id/tvIdLaporan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="#EIO-8821"
@@ -146,7 +155,9 @@
                         android:textColor="#94A3B8"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"/>
+
                     <TextView
+                        android:id="@+id/tvFasilitas"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="AC Ruang Lab"
@@ -176,7 +187,9 @@
                         android:textColor="#94A3B8"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"/>
+
                     <TextView
+                        android:id="@+id/tvLokasi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gedung D, Lt. 2"
@@ -186,7 +199,6 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"/>
                 </RelativeLayout>
-
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
