@@ -94,6 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp">
                 <TextView
+                    android:id="@+id/tvLabelDetail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_bold"
@@ -130,6 +131,7 @@
                 android:inputType="textMultiLine|textCapSentences"/>
 
             <TextView
+                android:id="@+id/tvLabelFoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"

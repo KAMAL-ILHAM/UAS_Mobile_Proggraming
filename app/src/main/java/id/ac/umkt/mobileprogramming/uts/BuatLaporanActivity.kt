@@ -26,16 +26,13 @@ class BuatLaporanActivity : AppCompatActivity() {
 
     // Simpan data kategori tambahan untuk bottom sheet
     private val subKategoriList = listOf(
-        CategoryItem("Furnitur", R.drawable.ic_furnitur4),
-        CategoryItem("Elektronik", R.drawable.ic_electronic3),
-        CategoryItem("Sanitasi", R.drawable.ic_sanitasi3),
         CategoryItem("Jaringan", R.drawable.ic_jaringan3),
         CategoryItem("Gedung", R.drawable.ic_gedung3),
         CategoryItem("Area Luar", R.drawable.ic_outdoors3)
     )
 
     private lateinit var cardsList: List<LinearLayout>
-    private var selectedGedungPosition = 4 // Default Gedung E (urutan ke-4 indeks array)
+    private var selectedGedungPosition = -1 // Pilihan Default Gedung
     private var selectedKategori: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +51,17 @@ class BuatLaporanActivity : AppCompatActivity() {
         val etNamaRuangan = findViewById<EditText>(R.id.etNamaRuangan)
         val btnLanjut = findViewById<MaterialButton>(R.id.btnLanjut)
 
+        val tvLabelKategori = findViewById<TextView>(R.id.tvLabelKategori)
+        val tvLabelGedung = findViewById<TextView>(R.id.tvLabelGedung)
+        val tvLabelRuangan = findViewById<TextView>(R.id.tvLabelRuangan)
+
+        val htmlKategori = "PILIH KATEGORI KERUSAKAN <font color='#EF4444'>*</font>"
+        val htmlGedung = "GEDUNG / AREA <font color='#EF4444'>*</font>"
+        val htmlRuangan = "NAMA / NOMOR RUANGAN <font color='#EF4444'>*</font>"
+
+        tvLabelKategori?.text = androidx.core.text.HtmlCompat.fromHtml(htmlKategori, androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY)
+        tvLabelGedung?.text = androidx.core.text.HtmlCompat.fromHtml(htmlGedung, androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY)
+        tvLabelRuangan?.text = androidx.core.text.HtmlCompat.fromHtml(htmlRuangan, androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY)
         cardsList = listOf(cardFurnitur, cardElektronik, cardSanitasi, cardLainnya)
 
         // Tombol Close (Kembali)
@@ -96,6 +104,7 @@ class BuatLaporanActivity : AppCompatActivity() {
         popupWindow.setOnItemClickListener { _, _, position, _ ->
             selectedGedungPosition = position
             tvSelectedGedung.text = daftarGedung[position]
+            tvSelectedGedung.setTextColor(android.graphics.Color.parseColor("#0F172A"))
             popupWindow.dismiss()
         }
 
@@ -110,6 +119,12 @@ class BuatLaporanActivity : AppCompatActivity() {
 
             if (selectedKategori == null) {
                 Toast.makeText(this, "Harap pilih kategori fasilitas terlebih dahulu", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validasi Gedung
+            if (selectedGedungPosition == -1) {
+                Toast.makeText(this, "Harap pilih gedung/area terlebih dahulu", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -132,6 +147,8 @@ class BuatLaporanActivity : AppCompatActivity() {
 
             // Animasi slide transisi modern bawaan Android
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+
+
         }
     }
 
@@ -165,9 +182,12 @@ class BuatLaporanActivity : AppCompatActivity() {
 
         activeBox.setBackgroundResource(R.drawable.bg_icon_box_active)
         activeImg.setImageResource(iconRes)
-        activeImg.setColorFilter(Color.parseColor("#2563EB")) // Tint warna biru aktif asli
+
+        // 🔥 UBAH BARIS INI: Gunakan warna putih agar kontras dengan background biru
+        activeImg.setColorFilter(android.graphics.Color.WHITE)
+
         activeTxt.text = title
-        activeTxt.setTextColor(Color.parseColor("#0F172A")) // Navy pekat teks aktif
+        activeTxt.setTextColor(android.graphics.Color.parseColor("#0F172A"))
         selectedKategori = title
     }
 

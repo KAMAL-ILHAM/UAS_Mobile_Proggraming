@@ -104,6 +104,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tvLabelKategori"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -128,7 +129,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/bg_card_category_active"
+                        android:background="@drawable/bg_card_category_inactive"
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center_vertical"
@@ -139,12 +140,13 @@
                         <FrameLayout
                             android:layout_width="36dp"
                             android:layout_height="36dp"
-                            android:background="@drawable/bg_icon_box_active">
+                            android:background="@drawable/bg_icon_box_inactive">
                             <ImageView
                                 android:layout_width="18dp"
                                 android:layout_height="18dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_furnitur3" />
+                                android:src="@drawable/ic_furnitur3"
+                                app:tint="#94A3B8" />
                         </FrameLayout>
 
                         <TextView
@@ -153,7 +155,7 @@
                             android:layout_marginStart="12dp"
                             android:fontFamily="@font/inter_bold"
                             android:text="Furnitur"
-                            android:textColor="#0F172A"
+                            android:textColor="#64748B"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -271,6 +273,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tvLabelGedung"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -303,8 +306,8 @@
                     android:layout_marginStart="12dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/inter_bold"
-                    android:text="Gedung Utama (Gedung E)"
-                    android:textColor="#0F172A"
+                    android:text="Pilih Gedung"
+                    android:textColor="#94A3B8"
                     android:textSize="14sp" />
 
                 <ImageView
@@ -314,6 +317,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tvLabelRuangan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"

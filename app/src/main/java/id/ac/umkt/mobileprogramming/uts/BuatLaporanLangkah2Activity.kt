@@ -81,6 +81,16 @@ class BuatLaporanLangkah2Activity : AppCompatActivity() {
         ivPreviewFoto = findViewById(R.id.ivPreviewFoto)
         layoutPlaceholderFoto = findViewById(R.id.layoutPlaceholderFoto)
 
+        // Letakkan di dalam onCreate BuatLaporanLangkah2Activity
+        val tvLabelDetail = findViewById<TextView>(R.id.tvLabelDetail) // Sesuaikan ID
+        val tvLabelFoto = findViewById<TextView>(R.id.tvLabelFoto) // Sesuaikan ID
+
+        val htmlDetail = "DETAIL MASALAH <font color='#EF4444'>*</font> 0/300"
+        val htmlFoto = "BUKTI FOTO <font color='#EF4444'>*</font>"
+
+        tvLabelDetail?.text = androidx.core.text.HtmlCompat.fromHtml(htmlDetail, androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY)
+        tvLabelFoto?.text = androidx.core.text.HtmlCompat.fromHtml(htmlFoto, androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY)
+
         // 2. Tombol Kembali
         findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             finish()
