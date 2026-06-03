@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_rounded_top_white"
+    android:orientation="vertical"
+    android:paddingTop="12dp"
+    android:paddingBottom="24dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="#E2E8F0" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_extrabold"
+        android:paddingHorizontal="24dp"
+        android:text="Pilih Program Studi"
+        android:textColor="#0F172A"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_field_editable"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/ic_menu_search"
+            android:alpha="0.5"/>
+
+        <EditText
+            android:id="@+id/etSearchProdi"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:background="@null"
+            android:fontFamily="@font/inter_medium"
+            android:hint="Cari jurusan..."
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textColorHint="#94A3B8"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lvProdi"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginHorizontal="24dp"
+        android:divider="#F1F5F9"
+        android:dividerHeight="1dp"
+        android:scrollbars="none"
+        android:nestedScrollingEnabled="true"/>
+
+</LinearLayout>

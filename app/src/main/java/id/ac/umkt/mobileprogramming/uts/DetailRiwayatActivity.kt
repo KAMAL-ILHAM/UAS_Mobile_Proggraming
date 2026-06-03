@@ -118,17 +118,26 @@ class DetailRiwayatActivity : AppCompatActivity() {
                     }
                     tvStatus?.background = bgDrawable
 
+                    // 🔥 LOGIKA BARU: TAMPILKAN FOTO BUKTI DARI BASE64
                     val ivBigIcon = findViewById<ImageView>(R.id.ivBigIcon)
-                    val iconRes = when (dbKategori.lowercase()) {
-                        "elektronik" -> R.drawable.ic_monitor
-                        "furnitur" -> R.drawable.ic_furnitur
-                        "sanitasi" -> R.drawable.ic_sanitasi
-                        "jaringan" -> R.drawable.ic_jaringan
-                        "gedung" -> R.drawable.ic_gedung
-                        "area luar" -> R.drawable.ic_outdoor
-                        else -> R.drawable.ic_document
+                    val dbFotoBase64 = document.getString("foto_base64") ?: ""
+
+                    if (dbFotoBase64.isNotEmpty()) {
+                        try {
+                            val imageBytes = android.util.Base64.decode(dbFotoBase64, android.util.Base64.DEFAULT)
+                            val decodedImage = android.graphics.BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+
+                            ivBigIcon?.setImageBitmap(decodedImage)
+                            ivBigIcon?.clearColorFilter()
+                            ivBigIcon?.scaleType = ImageView.ScaleType.CENTER_CROP
+                            ivBigIcon?.alpha = 0.5f
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            setFallbackIcon(ivBigIcon, dbKategori)
+                        }
+                    } else {
+                        setFallbackIcon(ivBigIcon, dbKategori)
                     }
-                    ivBigIcon?.setImageResource(iconRes)
 
                 } else {
                     Toast.makeText(this, "Data laporan tidak ditemukan.", Toast.LENGTH_SHORT).show()
@@ -137,5 +146,21 @@ class DetailRiwayatActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Gagal sinkronisasi data: ${it.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun setFallbackIcon(imageView: ImageView?, kategori: String) {
+        val iconRes = when (kategori.lowercase(Locale.ROOT)) {
+            "elektronik" -> R.drawable.ic_monitor
+            "furnitur" -> R.drawable.ic_furnitur
+            "sanitasi" -> R.drawable.ic_sanitasi
+            "jaringan" -> R.drawable.ic_jaringan
+            "gedung" -> R.drawable.ic_gedung
+            "area luar" -> R.drawable.ic_outdoor
+            else -> R.drawable.ic_document
+        }
+        imageView?.setImageResource(iconRes)
+        imageView?.alpha = 0.15f
+        imageView?.setColorFilter(Color.WHITE)
+        imageView?.scaleType = ImageView.ScaleType.FIT_CENTER
     }
 }

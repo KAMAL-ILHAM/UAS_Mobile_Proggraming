@@ -163,24 +163,33 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/layoutPilihProdi"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_field_editable"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingHorizontal="20dp">
 
-                    <EditText
-                        android:id="@+id/etProgramStudi"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null"
+                    <TextView
+                        android:id="@+id/tvProgramStudi"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:fontFamily="@font/inter_extrabold"
-                        android:hint="Contoh: Teknik Informatika"
-                        android:textColorHint="#94A3B8"
+                        android:hint="Pilih Program Studi"
                         android:textColor="#0F172A"
+                        android:textColorHint="#94A3B8"
                         android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:tint="#94A3B8" />
                 </LinearLayout>
 
                 <View

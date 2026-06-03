@@ -20,6 +20,17 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="48dp" />
 
+        <ImageView
+            android:id="@+id/ivBigIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:alpha="0.4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <FrameLayout
             android:id="@+id/btnBackDetail"
             android:layout_width="40dp"
@@ -91,18 +102,6 @@
             app:layout_constraintBottom_toBottomOf="@id/badgeStatusDetail"
             app:layout_constraintStart_toEndOf="@id/badgeStatusDetail"
             app:layout_constraintTop_toTopOf="@id/badgeStatusDetail" />
-
-        <ImageView
-            android:id="@+id/ivBigIcon"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:alpha="0.10"
-            android:src="@drawable/ic_winding_air"
-            app:layout_constraintBottom_toTopOf="@id/badgeStatusDetail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnBackDetail"
-            app:tint="#FFFFFF" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
